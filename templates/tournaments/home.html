@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% load static cup_tags %}
+
+{% block title %}RUH LEO CUP — Футбольні турніри у Львові{% endblock %}
+{% block body_theme %}{{ page_theme }}{% endblock %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{% static 'css/redesign/pages/home.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="hero" id="home-hero" data-season-wheel data-tournaments-count="{{ tournaments|length }}">
+  <div class="hero__glow"></div>
+  <div class="container hero__container">
+    <div class="hero__eyebrow-row">
+      <div class="pill accent">
+        <span class="live-dot"></span>
+        Заявки відкриті · сезон {% now "Y" %}
+      </div>
+      <div class="mono hero__location-tag">ЛЬВІВ · UA · {% now "Y" %}</div>
+    </div>
+
+    <div id="hero-dynamic" data-theme-target>
+      {% if active_tournament %}
+      {% include "tournaments/partials/hero_row.html" with tournament=active_tournament index=0 tournaments_count=tournaments|length %}
+      {% endif %}
+    </div>
+
+    <div class="hero__wheel">
+      <button type="button" class="hero__wheel-btn hero__wheel-btn--prev" data-wheel-prev aria-label="Попередній сезон">
+        {% include "includes/arrow.html" with direction="left" %}
+      </button>
+      <div class="hero__wheel-track" role="tablist">
+        {% for t in tournaments %}
+        <button type="button"
+                class="hero__wheel-item hero__wheel-item--{{ t.theme_class }}{% if forloop.first %} is-active{% endif %}"
+                role="tab"
+                aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                data-wheel-index="{{ forloop.counter0 }}"
+                data-slug="{{ t.slug }}"
+                data-theme="{{ t.theme_class }}"
+                data-partial-url="{% url 'tournaments:hero_partial' t.slug %}?index={{ forloop.counter0 }}">
+          <span class="hero__wheel-item-head">
+            {% include "includes/season_icon.html" with season=t.season_en size=16 %}
+          </span>
+          <span class="display cup-wheel-title">{{ t.title }}</span>
+          <span class="cup-wheel-meta">{{ t.season }} · {{ t.year }}</span>
+        </button>
+        {% endfor %}
+      </div>
+      <button type="button" class="hero__wheel-btn hero__wheel-btn--next" data-wheel-next aria-label="Наступний сезон">
+        {% include "includes/arrow.html" %}
+      </button>
+    </div>
+  </div>
+</section>
+
+<section class="cup-marquee" aria-hidden="true">
+  <div class="cup-marquee__track">
+  {% for item in marquee_items %}
+    <span>{{ item }}</span><span> ● </span>
+  {% endfor %}
+  {% for item in marquee_items %}
+    <span>{{ item }}</span><span> ● </span>
+  {% endfor %}
+  </div>
+</section>
+
+<section class="cup-section cup-section--lg">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">01 / Цифри сезону</div>
+        <h2>Один рік. <span class="text-accent">Чотири турніри.</span></h2>
+      </div>
+      <p class="text-muted section-head__aside">
+        Команди з усієї України збираються у Львові чотири рази на рік, щоб боротися за головний трофей.
+      </p>
+    </div>
+    <div class="stats-grid">
+      {% for stat in hub_stats %}
+      <div class="stat-cell">
+        <div class="stat-cell__value-row">
+          <span class="display mono stat-cell__value" data-stat-counter data-value="{{ stat.value }}">0</span>
+          <span class="mono stat-cell__plus">+</span>
+        </div>
+        <div class="stat-cell__label">{{ stat.label }}</div>
+        <div class="eyebrow stat-cell__hint">{{ stat.hint }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="cup-section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">02 / Календар</div>
+        <h2>Календар сезону</h2>
+      </div>
+    </div>
+    <div class="seasons-recap">
+      {% for t in tournaments %}
+      <a href="{{ t.get_absolute_url }}" class="season-card {{ t.theme_class }}">
+        <div class="season-card__head">
+          <span class="pill"><span class="dot"></span> {{ t.season }}</span>
+        </div>
+        <h3 class="display season-card__title">{{ t.title }}</h3>
+        <p class="text-muted">{{ t.subtitle }}</p>
+        <div class="season-card__meta">
+          <div>
+            <div class="eyebrow cup-label-sm">Дати</div>
+            <div class="mono cup-meta-value">{{ t.dates_display }}</div>
+          </div>
+          <div>
+            <div class="eyebrow cup-label-sm">Команд</div>
+            <div class="mono cup-meta-value">{{ t.teams_count }}</div>
+          </div>
+        </div>
+        <div class="season-card__footer">
+          <span class="mono cup-tagline">{{ t.tagline|upper }}</span>
+          <span class="text-accent">{% include "includes/arrow.html" %}</span>
+        </div>
+        {% if t.show_countdown %}
+        {% include "includes/countdown.html" with starts_at=t.starts_at compact=True %}
+        {% endif %}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="cup-section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">03 / Архів</div>
+        <h2>Минулі турніри</h2>
+      </div>
+      <a href="{% url 'tournaments:archive' %}" class="btn btn-ghost">Дивитись усе {% include "includes/arrow.html" %}</a>
+    </div>
+    <div class="gallery-grid">
+      {% for g in gallery_teaser %}
+      <figure class="gallery-item gallery-item--h{% if gallery_from_db %}{{ g.height }}{% else %}{{ g.h }}{% endif %}">
+        {% if gallery_from_db %}
+        <img src="{{ g.image.url }}" alt="{{ g.alt_text }}" width="800" height="600" loading="lazy" decoding="async">
+        {% else %}
+        <img src="{% static g.src %}" alt="{{ g.alt }}" width="800" height="600" loading="lazy" decoding="async">
+        {% endif %}
+      </figure>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% include "includes/footer.html" %}
+{% endblock %}
+
+{% block page_js %}
+<script type="module" src="{% static 'js/season-wheel.js' %}"></script>
+<script type="module" src="{% static 'js/countdown.js' %}"></script>
+<script type="module" src="{% static 'js/stat-counter.js' %}"></script>
+{% endblock %}

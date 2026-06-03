@@ -1,0 +1,19 @@
+<div class="apply-success">
+  <div class="apply-hero__glow"></div>
+  <div class="container apply-success__inner text-center">
+    <div class="eyebrow text-accent">· ЗАЯВКУ ПРИЙНЯТО ·</div>
+    <h1 class="display apply-hero__title">
+      Дякуємо,<br><span class="text-accent">{{ application.team_name }}!</span>
+    </h1>
+    <p class="text-muted apply-success__text">
+      Ми зв'яжемося з вами протягом 24 годин для підтвердження участі у турнірі
+      <strong class="text-accent">{{ application.tournament.title }} · {{ application.tournament.season }} {{ application.tournament.year }}</strong>.
+    </p>
+    <div class="hero__actions cup-success-actions">
+      <a href="{{ application.tournament.get_absolute_url }}" class="btn btn-primary">
+        До сторінки турніру {% include "includes/arrow.html" %}
+      </a>
+      <a href="{% url 'tournaments:home' %}" class="btn btn-ghost">На головну</a>
+    </div>
+  </div>
+</div>

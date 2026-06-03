@@ -1,0 +1,87 @@
+/* Home page specifics */
+
+.hero__card-stage {
+  position: relative;
+  min-width: 0;
+}
+
+.hero[data-season-wheel] .hero__card {
+  touch-action: pan-y;
+  cursor: grab;
+  transform: translateX(var(--hero-swipe-x, 0px)) rotate(var(--hero-card-rotate, 0deg));
+  transform-origin: center center;
+  transition: transform 0.25s ease-out;
+}
+
+.hero[data-season-wheel] .hero__card.is-swiping {
+  cursor: grabbing;
+  transition: none;
+}
+
+.hero__card-swipe-hint {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 20px 0 0;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+}
+
+.hero__card-swipe-hint-icon {
+  color: var(--accent);
+  font-size: 14px;
+}
+
+.hero__card-swipe-hint-text--drag {
+  display: none;
+}
+
+@media (min-width: 761px) {
+  .hero__card-swipe-hint-text--touch {
+    display: none;
+  }
+
+  .hero__card-swipe-hint-text--drag {
+    display: inline;
+  }
+}
+
+#hero-dynamic {
+  overflow: visible;
+}
+
+.hero__card.hero-card--swap-out {
+  animation: hero-card-swap-out 0.2s ease forwards;
+}
+
+.hero__card.hero-card--swap-in {
+  animation: hero-card-swap-in 0.24s ease forwards;
+}
+
+@keyframes hero-card-swap-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes hero-card-swap-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero[data-season-wheel] .hero__card {
+    transition: none;
+  }
+
+  .hero__card.hero-card--swap-out,
+  .hero__card.hero-card--swap-in {
+    animation: none;
+  }
+}

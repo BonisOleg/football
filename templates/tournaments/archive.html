@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Архів — Минулі турніри RUH LEO CUP{% endblock %}
+{% block body_theme %}{{ page_theme }}{% endblock %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{% static 'css/redesign/pages/archive.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="archive-hero">
+  <div class="archive-hero__glow"></div>
+  <div class="container archive-hero__inner">
+    <div class="eyebrow text-accent">03 / Архів</div>
+    <h1 class="display archive-hero__title">Минулі<br><span class="text-accent">турніри</span></h1>
+    <p class="text-muted archive-hero__lead">
+      Фото, цифри та моменти з минулих сезонів RUH LEO CUP. Чотири турніри на рік — одна історія футболу у Львові.
+    </p>
+  </div>
+</section>
+
+<section class="cup-section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Сезони</div>
+        <h2>Результати<br><span class="text-accent">за роки</span></h2>
+      </div>
+    </div>
+    <div class="archive-editions">
+      {% for e in editions %}
+      <article class="archive-edition {{ e.theme_class }}">
+        <div class="archive-edition__head">
+          <span class="eyebrow text-accent">{{ e.year }}</span>
+          <span class="pill"><span class="dot"></span> {{ e.season }}</span>
+        </div>
+        <h3 class="display archive-edition__title">{{ e.title }}</h3>
+        <dl class="archive-edition__stats">
+          <div>
+            <dt class="eyebrow cup-label-sm">Команд</dt>
+            <dd class="mono cup-meta-value">{{ e.teams }}</dd>
+          </div>
+          <div>
+            <dt class="eyebrow cup-label-sm">Матчів</dt>
+            <dd class="mono cup-meta-value">{{ e.matches }}</dd>
+          </div>
+          <div>
+            <dt class="eyebrow cup-label-sm">Голів</dt>
+            <dd class="mono cup-meta-value">{{ e.goals }}</dd>
+          </div>
+        </dl>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="cup-section cup-section--lg">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Галерея</div>
+        <h2>Моменти<br><span class="text-accent">з поля</span></h2>
+      </div>
+    </div>
+    <div class="gallery-grid">
+      {% for g in gallery %}
+      <figure class="gallery-item gallery-item--h{% if gallery_from_db %}{{ g.height }}{% else %}{{ g.h }}{% endif %}">
+        {% if gallery_from_db %}
+        <img src="{{ g.image.url }}" alt="{{ g.alt_text }}" width="800" height="600" loading="lazy" decoding="async">
+        {% else %}
+        <img src="{% static g.src %}" alt="{{ g.alt }}" width="800" height="600" loading="lazy" decoding="async">
+        {% endif %}
+      </figure>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% include "includes/footer.html" %}
+{% endblock %}

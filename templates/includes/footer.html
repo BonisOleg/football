@@ -1,0 +1,68 @@
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__grid">
+      <div>
+        <div class="site-footer__brand-row">
+          {% include "includes/logo.html" with size=40 %}
+          <span class="site-footer__brand-title display">RUH · LEO CUP</span>
+        </div>
+        <p class="site-footer__about">
+          Наймасовіші футбольні турніри Західної України. Чотири сезони — чотири фестивалі футболу для дітей від 6 років.
+        </p>
+      </div>
+      <div>
+        <div class="eyebrow eyebrow--spaced">Турніри</div>
+        <ul class="site-footer__list">
+          {% for t in nav_tournaments %}
+          <li>
+            <a href="{{ t.get_absolute_url }}" class="site-footer__link">
+              {{ t.title }} <span class="text-muted">· {{ t.season }} {{ t.year }}</span>
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div>
+        <div class="eyebrow eyebrow--spaced">Контакти</div>
+        <ul class="site-footer__list">
+          <li class="mono">{{ site.phone }}</li>
+          <li class="mono"><a href="mailto:{{ site.email }}">{{ site.email }}</a></li>
+          <li class="text-muted site-footer__city">{{ site.city }}</li>
+        </ul>
+      </div>
+      <div>
+        <div class="eyebrow eyebrow--spaced">Соцмережі</div>
+        <div class="site-footer__social">
+          {% if site.url_instagram %}
+          <a href="{{ site.url_instagram }}" class="site-footer__social-btn" rel="noopener noreferrer" target="_blank" aria-label="Instagram">
+            {% include "includes/social-icon.html" with name="instagram" %}
+          </a>
+          {% endif %}
+          {% if site.url_telegram %}
+          <a href="{{ site.url_telegram }}" class="site-footer__social-btn" rel="noopener noreferrer" target="_blank" aria-label="Telegram">
+            {% include "includes/social-icon.html" with name="telegram" %}
+          </a>
+          {% endif %}
+          {% if site.url_youtube %}
+          <a href="{{ site.url_youtube }}" class="site-footer__social-btn" rel="noopener noreferrer" target="_blank" aria-label="YouTube">
+            {% include "includes/social-icon.html" with name="youtube" %}
+          </a>
+          {% endif %}
+          {% if site.url_tiktok %}
+          <a href="{{ site.url_tiktok }}" class="site-footer__social-btn" rel="noopener noreferrer" target="_blank" aria-label="TikTok">
+            {% include "includes/social-icon.html" with name="tiktok" %}
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="site-footer__bottom">
+      <div>© {% now "Y" %} RUH LEO CUP · ALL RIGHTS RESERVED</div>
+      <div class="site-footer__credit">
+        Сайт розроблено
+        <a href="https://www.prometeylabs.com/" class="site-footer__credit-link" rel="noopener noreferrer" target="_blank">PrometeyLabs</a>
+      </div>
+      <div>ФУТБОЛЬНІ ТУРНІРИ · ЛЬВІВ</div>
+    </div>
+  </div>
+</footer>

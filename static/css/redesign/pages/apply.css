@@ -1,0 +1,130 @@
+.apply-hero {
+  position: relative;
+  padding: 40px 0;
+  overflow: hidden;
+}
+
+.apply-hero__glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 50% 40% at 20% 50%,
+    color-mix(in oklab, var(--accent) 18%, transparent),
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.apply-hero__title {
+  font-size: clamp(48px, 9vw, 120px);
+  line-height: 0.85;
+  margin: 0;
+}
+
+.apply-success {
+  padding: 80px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.apply-success__inner {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.apply-aside {
+  background: var(--bg-1);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 28px;
+}
+
+.apply-aside__info {
+  margin: 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+
+.form-alert {
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 24px;
+}
+
+.form-alert--error {
+  border: 1px solid color-mix(in oklab, var(--kids) 55%, var(--line));
+  background: color-mix(in oklab, var(--kids) 12%, var(--bg-1));
+}
+
+.form-alert__title {
+  margin: 0 0 4px;
+  font-weight: 600;
+}
+
+.form-alert__text {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.form-error {
+  color: var(--kids);
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+.field-error input,
+.field-error select,
+.field-error textarea {
+  border-color: var(--kids);
+}
+
+.cup-form-heading {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.cup-choice-title {
+  font-size: 18px;
+  margin-top: 14px;
+  display: block;
+  text-align: left;
+}
+
+.cup-submit-btn {
+  margin-top: 24px;
+  width: 100%;
+  justify-content: center;
+}
+
+.cup-aside-title {
+  font-size: 32px;
+  margin: 12px 0;
+}
+
+.cup-aside-tournament {
+  font-size: 22px;
+}
+
+.apply-hero__lead {
+  max-width: 540px;
+  margin-top: 22px;
+}
+
+.apply-success__text {
+  font-size: 17px;
+  margin-top: 30px;
+  line-height: 1.6;
+}
+
+.cup-success-actions {
+  justify-content: center;
+  margin-top: 40px;
+}
+
+#id_tournament {
+  display: none;
+}

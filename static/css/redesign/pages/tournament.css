@@ -1,0 +1,238 @@
+/* Tournament detail page */
+
+.tournament-hero {
+  position: relative;
+  padding: 48px 0;
+  overflow: hidden;
+}
+
+.tournament-hero__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  align-items: center;
+}
+
+.tournament-hero__title {
+  font-size: clamp(56px, 10vw, 140px);
+  line-height: 0.85;
+  margin: 0;
+}
+
+.tournament-about-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.tournament-about-cell {
+  background: var(--bg-1);
+  padding: 28px 24px;
+}
+
+.bracket-wrap {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  background: var(--bg-1);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 24px;
+}
+
+.bracket-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.bracket-match {
+  background: var(--bg-0);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bracket-match--live {
+  border-color: var(--accent);
+}
+
+.schedule-scroll {
+  overflow-x: auto;
+}
+
+.schedule-row {
+  display: grid;
+  grid-template-columns: 56px 80px 1fr 56px 56px;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+  min-width: 520px;
+}
+
+.schedule-row--head {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--fg-2);
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.scorers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.scorer-row {
+  display: grid;
+  grid-template-columns: 40px 1fr 80px 56px;
+  gap: 16px;
+  padding: 14px 18px;
+  background: var(--bg-1);
+  align-items: center;
+}
+
+.teams-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.team-chip {
+  background: var(--bg-1);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.tournament-gallery {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.tournament-cta {
+  position: relative;
+  padding: 64px 0;
+  overflow: hidden;
+}
+
+.tournament-cta__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  align-items: center;
+}
+
+.cup-section-tag {
+  margin: 16px 0;
+}
+
+.cup-about-value {
+  font-size: clamp(28px, 4vw, 40px);
+  margin-top: 12px;
+}
+
+.cup-about-text {
+  margin-top: 12px;
+  color: var(--fg-1);
+}
+
+.cup-age-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.cup-bracket-label {
+  margin-bottom: 16px;
+}
+
+.cup-scorers-mt {
+  margin-top: 24px;
+}
+
+.cup-team-short {
+  font-size: 22px;
+}
+
+.cup-team-name {
+  font-size: 14px;
+  margin-top: 6px;
+}
+
+.cup-cta-title {
+  font-size: clamp(40px, 8vw, 72px);
+  line-height: 0.9;
+}
+
+.cup-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+@media (min-width: 761px) {
+  .tournament-hero__grid {
+    grid-template-columns: 1.1fr 1fr;
+    gap: 48px;
+  }
+
+  .tournament-about-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .bracket-wrap {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .stats-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .teams-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .tournament-gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .tournament-cta__grid {
+    grid-template-columns: 1.5fr 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .teams-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .tournament-gallery {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

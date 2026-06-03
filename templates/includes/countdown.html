@@ -1,0 +1,20 @@
+<div class="cup-countdown{% if compact %} cup-countdown--compact{% endif %}"
+     data-countdown
+     data-starts-at="{{ starts_at|date:'c' }}">
+  <div class="cup-countdown__cell{% if not compact %} cup-countdown__cell--large{% else %} cup-countdown__cell--compact{% endif %}">
+    <div class="cup-countdown__value display mono" data-cd-days>00</div>
+    <div class="eyebrow countdown-label">Дні</div>
+  </div>
+  <div class="cup-countdown__cell{% if not compact %} cup-countdown__cell--large{% else %} cup-countdown__cell--compact{% endif %}">
+    <div class="cup-countdown__value display mono" data-cd-hours>00</div>
+    <div class="eyebrow countdown-label">Год</div>
+  </div>
+  <div class="cup-countdown__cell{% if not compact %} cup-countdown__cell--large{% else %} cup-countdown__cell--compact{% endif %}">
+    <div class="cup-countdown__value display mono" data-cd-mins>00</div>
+    <div class="eyebrow countdown-label">Хв</div>
+  </div>
+  <div class="cup-countdown__cell{% if not compact %} cup-countdown__cell--large{% else %} cup-countdown__cell--compact{% endif %}">
+    <div class="cup-countdown__value display mono" data-cd-secs>00</div>
+    <div class="eyebrow countdown-label">Сек</div>
+  </div>
+</div>

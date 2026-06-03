@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+{% load static cup_tags %}
+
+{% block title %}{{ tournament.title }} · {{ tournament.season }} {{ tournament.year }} — RUH LEO CUP{% endblock %}
+{% block body_theme %}{{ page_theme }}{% endblock %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{% static 'css/redesign/pages/tournament.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="tournament-hero">
+  <div class="hero__glow"></div>
+  <div class="container">
+    <div class="tournament-hero__grid">
+      <div>
+        <div class="pill accent"><span class="live-dot"></span> {{ tournament.highlight }}</div>
+        <div class="eyebrow text-accent cup-section-tag">· {{ tournament.season|upper }} {{ tournament.year }} ·</div>
+        <h1 class="display tournament-hero__title">
+          {% for part in tournament.title|split:" " %}
+          <span{% if not forloop.first %} class="hero__title-accent"{% endif %}>{{ part }}</span>
+          {% endfor %}
+        </h1>
+        <p class="text-muted">{{ tournament.description }}</p>
+        <div class="hero__actions">
+          <a href="{% url 'tournaments:apply' %}?tournament={{ tournament.slug }}" class="btn btn-primary">Подати заявку {% include "includes/arrow.html" %}</a>
+          <a href="{% url 'tournaments:home' %}" class="btn btn-ghost">Всі турніри</a>
+        </div>
+      </div>
+      <div class="hero__card">
+        <div class="eyebrow text-accent">{{ tournament.icon_hint }}</div>
+        {% if tournament.show_countdown %}
+        {% include "includes/countdown.html" with starts_at=tournament.starts_at %}
+        {% endif %}
+        <div class="hero__card-divider"></div>
+        <div class="mono cup-meta-value">{{ tournament.dates_display }}</div>
+        <div class="mono cup-meta-value">{{ tournament.location }}</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cup-section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">01 / Про турнір</div>
+        <h2>{{ tournament.tagline }}</h2>
+      </div>
+    </div>
+    <div class="tournament-about-grid">
+      <div class="tournament-about-cell">
+        <div class="eyebrow">Формат</div>
+        <div class="display cup-about-value">{{ tournament.format_text }}</div>
+      </div>
+      <div class="tournament-about-cell">
+        <div class="eyebrow">Внесок</div>
+        <div class="display cup-about-value">{{ tournament.fee_uah }} ₴</div>
+      </div>
+      <div class="tournament-about-cell">
+        <div class="eyebrow">Нагороди</div>
+        <div class="cup-about-text">{{ tournament.prize }}</div>
+      </div>
+    </div>
+    <div class="cup-age-groups">
+      {% for age in tournament.age_group_names %}
+      <span class="pill">{{ age }}</span>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="cup-section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">02 / Сітка</div>
+        <h2>Плей-оф</h2>
+      </div>
+    </div>
+    {% include "tournaments/partials/bracket.html" %}
+  </div>
+</section>
+
+<section class="cup-section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">03 / Розклад</div>
+        <h2>Матчі</h2>
+      </div>
+    </div>
+    <div class="schedule-scroll card">
+      <div class="schedule-row schedule-row--head">
+        <span>День</span><span>Час</span><span>Матч</span><span>Вік</span><span>Рах.</span><span>Поле</span>
+      </div>
+      {% for m in schedule %}
+      <div class="schedule-row schedule-row--{{ m.status }}">
+        <span class="mono">{{ m.day }}</span>
+        <span class="mono">{{ m.time }}</span>
+        <span>{{ m.a.short }} — {{ m.b.short }}</span>
+        <span class="mono">{{ m.age }}</span>
+        <span class="mono">{% if m.sA != None %}{{ m.sA }}:{{ m.sB }}{% else %}—{% endif %}</span>
+        <span class="mono">{{ m.field }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="cup-section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">04 / Статистика</div>
+        <h2>Цифри та бомбардири</h2>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-cell">
+        <div class="display mono stat-cell__value">{{ tournament.teams_count }}</div>
+        <div class="stat-cell__label">Команд</div>
+      </div>
+      <div class="stat-cell">
+        <div class="display mono stat-cell__value">{{ tournament.matches_count }}</div>
+        <div class="stat-cell__label">Матчів</div>
+      </div>
+      {% if tournament.show_goals_stat %}
+      <div class="stat-cell">
+        <div class="display mono stat-cell__value">{{ tournament.goals_count }}</div>
+        <div class="stat-cell__label">Голів</div>
+      </div>
+      {% endif %}
+      {% if tournament.show_wins_stat %}
+      <div class="stat-cell">
+        <div class="display mono stat-cell__value">{{ tournament.wins_count }}</div>
+        <div class="stat-cell__label">Перемог</div>
+      </div>
+      {% endif %}
+      {% if tournament.show_losses_stat %}
+      <div class="stat-cell">
+        <div class="display mono stat-cell__value">{{ tournament.losses_count }}</div>
+        <div class="stat-cell__label">Поразок</div>
+      </div>
+      {% endif %}
+    </div>
+    <div class="scorers-list cup-scorers-mt">
+      {% for s in top_scorers %}
+      <div class="scorer-row">
+        <span class="mono text-muted">{{ forloop.counter|pad02 }}</span>
+        <span>{{ s.name }} <span class="text-muted">· {{ s.team }}</span></span>
+        <span class="mono">{{ s.age }}</span>
+        <span class="display text-accent">{{ s.goals }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="cup-section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">05 / Команди</div>
+        <h2>Учасники</h2>
+      </div>
+    </div>
+    <div class="teams-grid">
+      {% for team in teams_pool %}
+      <div class="team-chip">
+        <div class="display cup-team-short">{{ team.short }}</div>
+        <div class="cup-team-name">{{ team.name }}</div>
+        <div class="eyebrow cup-label-sm">{{ team.city }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="tournament-cta">
+  <div class="hero__glow"></div>
+  <div class="container tournament-cta__grid">
+    <div>
+      <div class="eyebrow text-accent">· РЕЄСТРАЦІЯ ·</div>
+      <h2 class="display cup-cta-title">Готові<br><span class="text-accent">грати?</span></h2>
+      <p class="text-muted">Заявка приймається від офіційних представників школи або клубу.</p>
+    </div>
+    <div class="cup-cta-actions">
+      <a href="{% url 'tournaments:apply' %}?tournament={{ tournament.slug }}" class="btn btn-primary">Подати заявку {% include "includes/arrow.html" %}</a>
+    </div>
+  </div>
+</section>
+
+{% include "includes/footer.html" %}
+{% endblock %}
+
+{% block page_js %}
+<script type="module" src="{% static 'js/countdown.js' %}"></script>
+{% endblock %}

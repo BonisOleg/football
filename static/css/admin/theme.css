@@ -1,0 +1,51 @@
+/* Football Lviv admin — contrast fixes for spring-green primary palette */
+
+.bg-primary-600.text-white,
+.border-primary-600.bg-primary-600.text-white {
+  color: oklch(0.18 0.01 250);
+}
+
+.bg-primary-600.text-white .material-symbols-outlined {
+  color: oklch(0.18 0.01 250);
+}
+
+/* Bulk actions bar: darker green so white text stays readable */
+.admin-bulk-actions {
+  background-color: oklch(44% 0.16 135);
+  color: oklch(98% 0.01 130);
+}
+
+.admin-bulk-actions .action-counter,
+.admin-bulk-actions .all,
+.admin-bulk-actions .clear,
+.admin-bulk-actions .question a,
+.admin-bulk-actions .clear a {
+  color: oklch(98% 0.01 130);
+}
+
+.admin-bulk-actions select[name="action"] {
+  background-color: oklch(38% 0.14 135);
+  border-color: oklch(54% 0.14 135);
+  color: oklch(98% 0.01 130);
+}
+
+.admin-bulk-actions select[name="action"] option {
+  background-color: oklch(28% 0.12 135);
+  color: oklch(98% 0.01 130);
+}
+
+.admin-bulk-actions .material-symbols-outlined {
+  color: oklch(98% 0.01 130);
+}
+
+/* User menu: keep long Ukrainian labels inside the dropdown */
+#nav-sidebar-inner > nav.absolute {
+  min-width: 0;
+  overflow: hidden;
+}
+
+#nav-sidebar-inner > nav.absolute a,
+#nav-sidebar-inner > nav.absolute button {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}

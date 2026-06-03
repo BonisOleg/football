@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}RUH LEO CUP — Футбольні турніри у Львові{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Футбольні турніри RUH LEO CUP у Львові — Leo Cup, Ruh Cup, Ruh Kids Cup.{% endblock %}">
+  <link rel="icon" href="{% static 'images/favicon.ico' %}" sizes="any">
+  <link rel="icon" href="{% static 'images/favicon-32x32.png' %}" type="image/png" sizes="32x32">
+  <link rel="icon" href="{% static 'images/favicon-16x16.png' %}" type="image/png" sizes="16x16">
+  <link rel="apple-touch-icon" href="{% static 'images/apple-touch-icon.png' %}">
+  <link rel="stylesheet" href="{% static 'css/redesign/styles.css' %}">
+  <link rel="stylesheet" href="{% static 'css/redesign/layout.css' %}">
+  {% block page_css %}{% endblock %}
+</head>
+<body class="page {% block body_theme %}theme-spring{% endblock %}">
+  {% include "includes/header.html" %}
+  <main id="root">
+    {% block content %}{% endblock %}
+  </main>
+  <script src="{% static 'vendor/htmx.min.js' %}" defer></script>
+  <script src="{% static 'js/nav.js' %}" defer></script>
+  {% block page_js %}{% endblock %}
+</body>
+</html>
