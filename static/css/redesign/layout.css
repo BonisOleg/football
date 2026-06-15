@@ -69,7 +69,7 @@ html.is-nav-open {
   padding-block: 14px;
   padding-inline: max(22px, env(safe-area-inset-left, 0px) + 14px)
     max(22px, env(safe-area-inset-right, 0px) + 14px);
-  min-height: 64px;
+  min-height: 72px;
 }
 
 .site-header__logo {
@@ -83,14 +83,30 @@ html.is-nav-open {
   display: block;
   flex-shrink: 0;
   object-fit: contain;
+  width: auto;
+  max-width: min(160px, 42vw);
 }
 
-.site-header__logo-text {
-  font-family: var(--f-display);
-  font-size: 20px;
+.site-header__logo--brand {
+  gap: 14px;
+}
+
+.site-header__logo--brand .cup-logo {
+  max-width: min(112px, 32vw);
+  height: 64px;
+  width: auto;
+}
+
+.site-header__wordmark {
+  font-size: clamp(14px, 2.4vw, 22px);
+  line-height: 0.95;
   letter-spacing: 0.02em;
-  display: flex;
-  align-items: center;
+  white-space: nowrap;
+  -webkit-font-smoothing: antialiased;
+}
+
+.site-header__wordmark-accent {
+  color: oklch(0.78 0.14 85);
 }
 
 .site-header__logo-muted {
@@ -340,9 +356,29 @@ html.is-nav-open {
   overflow: hidden;
 }
 
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.32;
+  pointer-events: none;
+}
+
+.hero--has-bg .hero__glow {
+  background: radial-gradient(
+    ellipse 70% 60% at 70% 30%,
+    color-mix(in oklab, var(--accent) 18%, transparent),
+    color-mix(in oklab, var(--bg-0) 88%, transparent) 70%
+  );
+}
+
 .hero__glow {
   position: absolute;
   inset: 0;
+  z-index: 1;
   background: radial-gradient(
     ellipse 60% 50% at 70% 30%,
     color-mix(in oklab, var(--accent) 22%, transparent),
@@ -390,11 +426,26 @@ html.is-nav-open {
   color: var(--accent);
 }
 
+.hero__mega-title .hero__title-brand {
+  font-size: clamp(22px, 5.5vw, 58px);
+  line-height: 0.92;
+  letter-spacing: -0.01em;
+  max-width: 11em;
+}
+
 .hero__desc {
   margin-top: 18px;
   font-size: 16px;
   color: var(--fg-1);
   max-width: 520px;
+}
+
+.hero__desc p {
+  margin: 0 0 0.75em;
+}
+
+.hero__desc p:last-child {
+  margin-bottom: 0;
 }
 
 .hero__actions {
@@ -404,15 +455,44 @@ html.is-nav-open {
   flex-wrap: wrap;
 }
 
+.hero__card-stage {
+  position: relative;
+  min-width: 0;
+  isolation: isolate;
+  padding-bottom: 28px;
+}
+
+.hero__card-stage::before {
+  content: "";
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  bottom: 2px;
+  height: 76px;
+  background: radial-gradient(
+    ellipse 100% 100% at 50% 0%,
+    color-mix(in oklab, var(--accent) 40%, transparent),
+    transparent 72%
+  );
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(12px);
+  -webkit-filter: blur(12px);
+  transform: translateZ(0);
+}
+
 .hero__card {
   position: relative;
+  z-index: 1;
   overflow: hidden;
   background: var(--bg-1);
   border: 1px solid var(--line);
   border-radius: 24px;
   padding: 28px;
-  box-shadow: 0 30px 80px -30px color-mix(in oklab, var(--accent) 35%, transparent);
-  transition: box-shadow 0.6s ease;
+  box-shadow:
+    0 24px 64px -18px color-mix(in oklab, var(--accent) 38%, transparent),
+    0 0 0 1px color-mix(in oklab, var(--accent) 10%, var(--line));
+  transition: box-shadow 0.6s ease, border-color 0.6s ease;
 }
 
 .hero__card-inner {
@@ -490,14 +570,37 @@ html.is-nav-open {
 }
 
 .stat-cell__hint {
-  margin-top: 6px;
-  font-size: 10px;
+  margin-top: 10px;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .season-card__head {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: flex-start;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pill--soon {
+  border-color: var(--line);
+  color: var(--fg-2);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.btn.is-disabled {
+  opacity: 0.55;
+  pointer-events: none;
+  cursor: default;
+}
+
+.hero__wheel--has-past .hero__wheel-track {
+  mask-image: linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
 }
 
 .cup-wheel-num {
@@ -652,6 +755,15 @@ html.is-nav-open {
   color: var(--spring);
 }
 
+.hero__wheel-item--theme-summer.is-active {
+  border-color: var(--summer);
+}
+
+.hero__wheel-item--theme-summer.is-active .cup-wheel-num,
+.hero__wheel-item--theme-summer.is-active .season-icon {
+  color: var(--summer);
+}
+
 .hero__wheel-item--theme-autumn.is-active {
   border-color: var(--autumn);
 }
@@ -691,7 +803,8 @@ html.is-nav-open {
 
 .stat-cell {
   background: var(--bg-1);
-  padding: 28px 24px;
+  padding: 22px 20px;
+  min-height: 0;
 }
 
 .stat-cell__value {
@@ -701,9 +814,20 @@ html.is-nav-open {
 }
 
 .stat-cell__label {
-  margin-top: 14px;
+  margin-top: 16px;
   font-family: var(--f-display);
-  font-size: 20px;
+  font-size: clamp(18px, 2.5vw, 22px);
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.stat-cell__label p {
+  margin: 0;
+}
+
+.stat-cell__hint p {
+  margin: 0;
 }
 
 .seasons-recap {
@@ -741,11 +865,55 @@ html.is-nav-open {
 }
 
 .season-card__footer {
-  margin-top: auto;
-  padding-top: 24px;
+  padding-top: 0;
+  margin-top: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.season-card__bottom {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 24px;
+}
+
+.cup-countdown--compact {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.cup-countdown--compact .cup-countdown__cell {
+  min-width: 0;
+  padding: 8px 6px;
+}
+
+.site-block-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+
+.site-block-video {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--bg-0);
+}
+
+.site-block-video iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
 
 .gallery-grid {
@@ -860,6 +1028,34 @@ html.is-nav-open {
 .cup-arrow--up { transform: rotate(-90deg); }
 .cup-arrow--down { transform: rotate(90deg); }
 
+@media (max-width: 420px) {
+  .site-header__logo--brand {
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .site-header__logo--brand .cup-logo {
+    height: 58px;
+    max-width: min(96px, 30vw);
+  }
+
+  .site-header__wordmark {
+    font-size: 13px;
+    letter-spacing: 0.01em;
+  }
+}
+
+@media (min-width: 421px) and (max-width: 760px) {
+  .site-header__logo--brand .cup-logo {
+    height: 66px;
+    max-width: min(108px, 28vw);
+  }
+
+  .site-header__wordmark {
+    font-size: clamp(15px, 2.8vw, 18px);
+  }
+}
+
 @media (min-width: 761px) {
   .site-header-stack {
     position: sticky;
@@ -872,8 +1068,17 @@ html.is-nav-open {
       max(32px, env(safe-area-inset-right, 0px) + 20px);
     position: relative;
     z-index: 2;
-    min-height: 64px;
+    min-height: 72px;
     pointer-events: none;
+  }
+
+  .site-header__logo--brand .cup-logo {
+    height: 72px;
+    max-width: min(124px, 22vw);
+  }
+
+  .site-header__wordmark {
+    font-size: 22px;
   }
 
   .site-chrome__inner > * {
@@ -896,7 +1101,7 @@ html.is-nav-open {
     right: auto;
     bottom: 0;
     width: max-content;
-    max-width: min(100% - 420px, 760px);
+    max-width: min(100% - 480px, 760px);
     min-height: 0;
     max-height: none;
     margin: 0;
@@ -951,10 +1156,19 @@ html.is-nav-open {
   }
 
   .hero__wheel-track {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    overflow-x: visible;
-    scroll-snap-type: none;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    touch-action: pan-x;
+  }
+
+  .hero__wheel-track::-webkit-scrollbar {
+    display: none;
   }
 
   .hero__wheel-btn {
@@ -962,16 +1176,19 @@ html.is-nav-open {
   }
 
   .hero__wheel-item {
-    flex: unset;
+    flex: 0 0 min(168px, 22vw);
+    width: auto;
     min-width: 0;
-    scroll-snap-align: unset;
+    scroll-snap-align: center;
     padding: 16px 18px;
     min-height: 100px;
   }
 
   .cup-wheel-title {
-    font-size: 22px;
+    font-size: clamp(14px, 1.6vw, 22px);
     margin-top: 14px;
+    line-height: 1;
+    overflow-wrap: anywhere;
   }
 
   .stats-grid {
@@ -1005,7 +1222,7 @@ html.is-nav-open {
   }
 
   .seasons-recap {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .gallery-grid {
@@ -1023,5 +1240,11 @@ html.is-nav-open {
   .hero {
     min-height: 640px;
     padding: 60px 0 80px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .seasons-recap {
+    grid-template-columns: repeat(5, 1fr);
   }
 }

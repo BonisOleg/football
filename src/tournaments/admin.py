@@ -1,15 +1,21 @@
-from django import forms
 from django.contrib import admin
 from django.http import HttpResponseRedirect
-from django.urls import reverse
+from django.urls import path, reverse
 from django.utils.html import format_html
-from tinymce.widgets import TinyMCE
 from unfold.admin import ModelAdmin, TabularInline
 from unfold.contrib.filters.admin import (
     ChoicesDropdownFilter,
     RelatedDropdownFilter,
 )
 
+from .admin_forms import (
+    GalleryImageAdminForm,
+    SiteBlockAdminForm,
+    SiteSettingsAdminForm,
+    TournamentAdminForm,
+)
+from .admin_guidelines import render_admin_warning_callout
+from .admin_site_content import site_content_page_view, site_content_section_view
 from .models import (
     AgeGroup,
     Application,
@@ -18,19 +24,11 @@ from .models import (
     Goal,
     Match,
     Player,
+    SiteBlock,
     SiteSettings,
     Team,
     Tournament,
 )
-
-
-class TournamentAdminForm(forms.ModelForm):
-    class Meta:
-        model = Tournament
-        fields = "__all__"
-        widgets = {
-            "description": TinyMCE(),
-        }
 
 
 class AgeGroupInline(TabularInline):
@@ -95,8 +93,12 @@ class TournamentAdmin(ModelAdmin):
     list_editable = ("is_published", "sort_order")
     prepopulated_fields = {"slug": ("title",)}
     search_fields = ("title", "slug", "subtitle")
-    readonly_fields = ("get_hero_image_preview", "get_card_image_preview")
+    readonly_fields = ("content_guidelines", "get_hero_image_preview", "get_card_image_preview")
     fieldsets = (
+        (
+            "Увага перед редагуванням",
+            {"fields": ("content_guidelines",), "classes": ("wide",)},
+        ),
         (
             "Основне",
             {
@@ -148,9 +150,16 @@ class TournamentAdmin(ModelAdmin):
                     "card_image",
                     "get_card_image_preview",
                 ),
+                "description": (
+                    "Неправильні фото або HTML можуть зламати сторінку турніру або її роботу на мобільних."
+                ),
             },
         ),
     )
+
+    @admin.display(description="")
+    def content_guidelines(self, obj: Tournament) -> str:
+        return render_admin_warning_callout("tournament")
 
     @admin.display(description="Hero")
     def get_hero_image_preview(self, obj: Tournament) -> str:
@@ -271,6 +280,7 @@ class ArchiveEditionAdmin(ModelAdmin):
 
 @admin.register(GalleryImage)
 class GalleryImageAdmin(ModelAdmin):
+    form = GalleryImageAdminForm
     list_display = (
         "label",
         "get_preview",
@@ -286,6 +296,24 @@ class GalleryImageAdmin(ModelAdmin):
         ("height", ChoicesDropdownFilter),
     )
     search_fields = ("label", "alt_text")
+    readonly_fields = ("content_guidelines",)
+    fieldsets = (
+        (
+            "Увага перед редагуванням",
+            {"fields": ("content_guidelines",), "classes": ("wide",)},
+        ),
+        (
+            "Зображення",
+            {
+                "fields": ("image", "alt_text", "label", "height", "sort_order", "show_on_home", "show_on_archive"),
+                "description": "Неправильне фото може зламати сітку галереї на головній або в архіві.",
+            },
+        ),
+    )
+
+    @admin.display(description="")
+    def content_guidelines(self, obj: GalleryImage) -> str:
+        return render_admin_warning_callout("gallery")
 
     @admin.display(description="Превʼю")
     def get_preview(self, obj: GalleryImage) -> str:
@@ -323,8 +351,104 @@ class ApplicationAdmin(ModelAdmin):
         queryset.update(status=Application.Status.PROCESSED)
 
 
+@admin.register(SiteBlock)
+class SiteBlockAdmin(ModelAdmin):
+    form = SiteBlockAdminForm
+    list_display = ("label", "page", "key", "content_type", "sort_order")
+    list_filter = (("page", ChoicesDropdownFilter), ("content_type", ChoicesDropdownFilter))
+    list_editable = ("sort_order",)
+    search_fields = ("label", "key", "text_html")
+    ordering = ("page", "sort_order", "key")
+    readonly_fields = ("content_guidelines",)
+
+    fieldsets = (
+        (
+            "Увага перед редагуванням",
+            {"fields": ("content_guidelines",), "classes": ("wide",)},
+        ),
+        (
+            "Основне",
+            {"fields": ("page", "key", "label", "content_type", "sort_order")},
+        ),
+        (
+            "Контент",
+            {
+                "fields": ("text_html", "image", "video_url"),
+                "description": (
+                    "Неправильний файл або HTML може зламати блок, вигляд сторінки або її роботу. "
+                    "Заповніть лише поле, що відповідає обраному типу контенту."
+                ),
+            },
+        ),
+    )
+
+    @admin.display(description="")
+    def content_guidelines(self, obj: SiteBlock) -> str:
+        return render_admin_warning_callout("siteblock")
+
+    def get_urls(self):
+        custom_urls = [
+            path(
+                "page/<slug:page_slug>/",
+                self.admin_site.admin_view(site_content_page_view),
+                name="tournaments_siteblock_page",
+            ),
+            path(
+                "page/<slug:page_slug>/<slug:section_slug>/",
+                self.admin_site.admin_view(site_content_section_view),
+                name="tournaments_siteblock_section",
+            ),
+        ]
+        return custom_urls + super().get_urls()
+
+    def changelist_view(self, request, extra_context=None):
+        settings_obj = SiteSettings.objects.first() or SiteSettings.load()
+        return HttpResponseRedirect(
+            reverse(
+                "admin:tournaments_homeherosettings_change",
+                args=[settings_obj.pk],
+            ),
+        )
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        from django.core.cache import cache
+
+        from .context_processors import SITE_BLOCKS_CACHE_KEY
+
+        cache.delete(SITE_BLOCKS_CACHE_KEY)
+
+
 @admin.register(SiteSettings)
 class SiteSettingsAdmin(ModelAdmin):
+    form = SiteSettingsAdminForm
+    readonly_fields = ("content_guidelines",)
+    fieldsets = (
+        (
+            "Увага перед редагуванням",
+            {"fields": ("content_guidelines",), "classes": ("wide",)},
+        ),
+        (
+            "Брендинг",
+            {
+                "fields": ("site_name", "logo", "header_cta_label", "footer_about", "footer_copyright"),
+                "description": "Зміни тут впливають на хедер і футер усього сайту.",
+            },
+        ),
+        (
+            "Контакти",
+            {"fields": ("phone", "email", "city")},
+        ),
+        (
+            "Соцмережі",
+            {"fields": ("url_instagram", "url_telegram", "url_youtube", "url_tiktok")},
+        ),
+    )
+
+    @admin.display(description="")
+    def content_guidelines(self, obj: SiteSettings) -> str:
+        return render_admin_warning_callout("sitesettings")
+
     def has_add_permission(self, request) -> bool:
         return not SiteSettings.objects.exists()
 
@@ -338,3 +462,7 @@ class SiteSettingsAdmin(ModelAdmin):
                 reverse("admin:tournaments_sitesettings_change", args=[obj.pk]),
             )
         return super().changelist_view(request, extra_context)
+
+
+from . import admin_season_proxies  # noqa: E402, F401
+from . import admin_site_content_proxies  # noqa: E402, F401

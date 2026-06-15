@@ -10,13 +10,7 @@ from django.core.management.base import BaseCommand
 
 WIX = "https://static.wixstatic.com/media"
 
-BRANDING_ASSETS = {
-    "ruh-leo-cup-logo.png": (
-        f"{WIX}/7b71cf_50b50bebdb6f4072916a052a12309578~mv2.png"
-    ),
-}
-
-# Source photos from https://www.lvivcup.com.ua/ (Leo Cup / Ruh Cup pages)
+# Legacy — gallery only; logo/favicon in static/images/football-generation-logo.png
 GALLERY_ASSETS = {
     "gallery/opening-ceremony.jpg": (
         f"{WIX}/ae13fd_06320a00f3e8430ab9fdbbb1ba3cc021~mv2.jpg"
@@ -47,7 +41,8 @@ GALLERY_ASSETS = {
 
 class Command(BaseCommand):
     help = (
-        "Import static images for RUH LEO CUP site from lvivcup.com.ua. "
+        "Import gallery images for Football Generation site. "
+        "Логотип і favicon зберігаються в static/images/. "
         "Для повного імпорту фото та даних використовуйте import_lvivcup."
     )
 
@@ -55,7 +50,7 @@ class Command(BaseCommand):
         images_dir = Path(settings.BASE_DIR) / "static" / "images"
         images_dir.mkdir(parents=True, exist_ok=True)
 
-        for name, url in {**BRANDING_ASSETS, **GALLERY_ASSETS}.items():
+        for name, url in GALLERY_ASSETS.items():
             dest = images_dir / name
             dest.parent.mkdir(parents=True, exist_ok=True)
             if dest.exists() and not options.get("force"):
@@ -73,7 +68,7 @@ class Command(BaseCommand):
                 '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" '
                 'viewBox="0 0 400 300"><rect width="400" height="300" fill="#1a1f2e"/>'
                 '<text x="200" y="150" fill="#8899aa" text-anchor="middle" '
-                'font-family="monospace" font-size="14">RUH LEO CUP</text></svg>',
+                'font-family="monospace" font-size="14">Football Generation</text></svg>',
                 encoding="utf-8",
             )
             self.stdout.write(self.style.SUCCESS("Created placeholder.svg"))

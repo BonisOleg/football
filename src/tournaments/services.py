@@ -1,11 +1,87 @@
 from __future__ import annotations
 
 from collections import defaultdict
+from datetime import datetime
 from typing import Any
+
+from django.db.models import QuerySet
+from django.utils import timezone
 
 from .models import GalleryImage, Goal, Match, Team, Tournament
 
 HOME_GALLERY_TEASER_LIMIT = 6
+
+CALENDAR_SEASONS: tuple[str, ...] = (
+    Tournament.SeasonIcon.SPRING,
+    Tournament.SeasonIcon.SUMMER,
+    Tournament.SeasonIcon.AUTUMN,
+    Tournament.SeasonIcon.WINTER,
+)
+
+
+def calendar_season_for_month(month: int) -> str:
+    if month in (3, 4, 5):
+        return Tournament.SeasonIcon.SPRING
+    if month in (6, 7, 8):
+        return Tournament.SeasonIcon.SUMMER
+    if month in (9, 10, 11):
+        return Tournament.SeasonIcon.AUTUMN
+    return Tournament.SeasonIcon.WINTER
+
+
+def order_tournaments_by_current_season(
+    tournaments: list[Tournament] | QuerySet[Tournament],
+    *,
+    at: datetime | None = None,
+) -> list[Tournament]:
+    items = list(tournaments)
+    if not items:
+        return []
+
+    at = at or timezone.now()
+    current_season = calendar_season_for_month(at.month)
+
+    main = [t for t in items if t.season_en in CALENDAR_SEASONS]
+    extras = [t for t in items if t.season_en not in CALENDAR_SEASONS]
+
+    base_rank = {season: index for index, season in enumerate(CALENDAR_SEASONS)}
+    main.sort(key=lambda t: (base_rank.get(t.season_en, 99), t.sort_order, t.starts_at))
+
+    start_idx = CALENDAR_SEASONS.index(current_season)
+    rotated = CALENDAR_SEASONS[start_idx:] + CALENDAR_SEASONS[:start_idx]
+    display_rank = {season: index for index, season in enumerate(rotated)}
+
+    main.sort(key=lambda t: (display_rank.get(t.season_en, 99), t.sort_order, t.starts_at))
+    extras.sort(key=lambda t: (t.sort_order, t.starts_at))
+
+    return main + extras
+
+
+def get_published_tournaments(*, at: datetime | None = None) -> list[Tournament]:
+    queryset = Tournament.objects.filter(is_published=True)
+    return order_tournaments_by_current_season(queryset, at=at)
+
+
+def tournament_apply_deadline(tournament: Tournament) -> datetime:
+    return tournament.ends_at or tournament.starts_at
+
+
+def tournament_is_open_for_apply(tournament: Tournament, *, at: datetime | None = None) -> bool:
+    at = at or timezone.now()
+    return at < tournament_apply_deadline(tournament)
+
+
+def filter_open_tournaments(
+    tournaments: list[Tournament] | QuerySet[Tournament],
+    *,
+    at: datetime | None = None,
+) -> list[Tournament]:
+    at = at or timezone.now()
+    return [tournament for tournament in tournaments if tournament_is_open_for_apply(tournament, at=at)]
+
+
+def get_apply_tournaments(*, at: datetime | None = None) -> list[Tournament]:
+    return filter_open_tournaments(get_published_tournaments(at=at), at=at)
 
 
 def team_dict(team: Team) -> dict[str, str]:

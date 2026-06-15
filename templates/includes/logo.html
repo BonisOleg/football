@@ -1,10 +1,18 @@
 {% load static %}
+{% if site.logo %}
 <img
   class="cup-logo"
-  src="{% static 'images/ruh-leo-cup-logo.png' %}"
-  width="{{ size|default:36 }}"
-  height="{{ size|default:36 }}"
-  alt=""
-  aria-hidden="true"
+  src="{{ site.logo.url }}"
+  height="{{ size|default:40 }}"
+  alt="{{ site.site_name|default:'Football Generation' }}"
   decoding="async"
 >
+{% else %}
+<img
+  class="cup-logo"
+  src="{% static 'images/football-generation-logo.png' %}"
+  height="{{ size|default:40 }}"
+  alt="Football Generation"
+  decoding="async"
+>
+{% endif %}

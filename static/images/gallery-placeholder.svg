@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-label="Фото скоро зʼявиться">
+  <rect width="800" height="600" fill="#1a1f2e"/>
+  <rect x="1" y="1" width="798" height="598" fill="none" stroke="#3a4558" stroke-width="2" stroke-dasharray="12 8" rx="16"/>
+  <circle cx="400" cy="250" r="48" fill="none" stroke="#d4af37" stroke-width="2" opacity="0.55"/>
+  <path d="M400 218 v64 M368 250 h64" stroke="#d4af37" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+  <text x="400" y="360" fill="#8899aa" text-anchor="middle" font-family="monospace" font-size="18" letter-spacing="0.12em">ФОТО СКОРО</text>
+</svg>

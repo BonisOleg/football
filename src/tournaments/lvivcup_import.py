@@ -67,14 +67,7 @@ EXTRA_LIVE_LINKS = [
     "ruhu11",
 ]
 
-BRANDING_ASSETS = {
-    "ruh-leo-cup-logo.png": (
-        f"{WIX_MEDIA}/7b71cf_50b50bebdb6f4072916a052a12309578~mv2.png"
-    ),
-    "leo-cup-logo-spring.png": (
-        f"{WIX_MEDIA}/ae13fd_4591abc3b1a345f9b5b1f12424282b2a~mv2.png"
-    ),
-}
+BRANDING_ASSETS: dict[str, str] = {}
 
 IMAGE_EXT_RE = re.compile(r"\.(jpe?g|png|webp|avif)(?:/|\?|$)", re.I)
 TOURNIFY_LINK_RE = re.compile(r"tournifyapp\.com/live/([A-Za-z0-9_-]+)")
@@ -384,7 +377,7 @@ class LvivcupImporter:
             if label in existing_labels:
                 continue
             gallery = GalleryImage(
-                alt_text=f"Фото турніру RUH LEO CUP — {label}",
+                alt_text=f"Фото турніру Football Generation — {label}",
                 label=label,
                 height=GalleryImage.Height.TALL if sort_order % 2 else GalleryImage.Height.SHORT,
                 sort_order=sort_order,

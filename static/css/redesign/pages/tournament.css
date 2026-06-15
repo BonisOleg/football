@@ -2,15 +2,21 @@
 
 .tournament-hero {
   position: relative;
-  padding: 48px 0;
-  overflow: hidden;
+  padding: 40px 0 56px;
+  overflow: clip;
+}
+
+.tournament-hero .container {
+  position: relative;
+  z-index: 2;
 }
 
 .tournament-hero__grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 32px;
-  align-items: center;
+  align-items: start;
+  overflow: visible;
 }
 
 .tournament-hero__title {
@@ -196,10 +202,75 @@
   gap: 12px;
 }
 
+.tournament-hero .hero__card-stage {
+  align-self: start;
+  padding-bottom: 20px;
+}
+
+.tournament-hero__card {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  min-height: 0;
+  padding: 20px 22px;
+}
+
+.tournament-hero__card > * {
+  flex: 0 0 auto;
+}
+
+.tournament-hero__card .hero__card-divider {
+  margin: 14px 0;
+}
+
+.tournament-hero__card-top {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tournament-hero__card-meta {
+  margin-top: 0;
+}
+
+.tournament-hero .cup-countdown--compact {
+  gap: 6px;
+}
+
+.tournament-hero .cup-countdown--compact .cup-countdown__cell {
+  padding: 10px 8px;
+  border-radius: 12px;
+}
+
+.tournament-hero .cup-countdown--compact .cup-countdown__value {
+  font-size: clamp(22px, 4.5vw, 32px);
+}
+
+.tournament-hero .countdown-label {
+  margin-top: 4px;
+  font-size: 9px;
+}
+
+.tournament-hero .hero__card-grid {
+  gap: 12px 16px;
+}
+
+.tournament-hero .cup-label-sm {
+  font-size: 10px;
+}
+
+.tournament-hero .cup-meta-value {
+  margin-top: 6px;
+  font-size: 14px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
 @media (min-width: 761px) {
   .tournament-hero__grid {
     grid-template-columns: 1.1fr 1fr;
-    gap: 48px;
+    gap: 40px;
+    align-items: start;
   }
 
   .tournament-about-grid {

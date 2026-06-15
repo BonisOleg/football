@@ -1,11 +1,11 @@
-{% load static %}
+{% load static cup_tags %}
 <!DOCTYPE html>
 <html lang="uk">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}RUH LEO CUP — Футбольні турніри у Львові{% endblock %}</title>
-  <meta name="description" content="{% block meta_description %}Футбольні турніри RUH LEO CUP у Львові — Leo Cup, Ruh Cup, Ruh Kids Cup.{% endblock %}">
+  <title>{% block title %}{% block_plain "site" "default_title" %}{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}{% block_plain "site" "default_meta_description" %}{% endblock %}">
   <link rel="icon" href="{% static 'images/favicon.ico' %}" sizes="any">
   <link rel="icon" href="{% static 'images/favicon-32x32.png' %}" type="image/png" sizes="32x32">
   <link rel="icon" href="{% static 'images/favicon-16x16.png' %}" type="image/png" sizes="16x16">

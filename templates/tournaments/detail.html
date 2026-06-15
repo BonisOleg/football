@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static cup_tags %}
 
-{% block title %}{{ tournament.title }} · {{ tournament.season }} {{ tournament.year }} — RUH LEO CUP{% endblock %}
+{% block title %}{{ tournament.title }} · {{ tournament.season }} {{ tournament.year }} — {% block_plain "site" "brand_suffix" %}{% endblock %}
 {% block body_theme %}{{ page_theme }}{% endblock %}
 
 {% block page_css %}
@@ -17,25 +17,45 @@
       <div>
         <div class="pill accent"><span class="live-dot"></span> {{ tournament.highlight }}</div>
         <div class="eyebrow text-accent cup-section-tag">· {{ tournament.season|upper }} {{ tournament.year }} ·</div>
-        <h1 class="display tournament-hero__title">
-          {% for part in tournament.title|split:" " %}
-          <span{% if not forloop.first %} class="hero__title-accent"{% endif %}>{{ part }}</span>
+        <h1 class="display tournament-hero__title hero__mega-title">
+          {% for part in tournament.hero_title_parts %}
+          <span{% if part.accent %} class="hero__title-accent"{% elif part.brand %} class="hero__title-brand"{% endif %}>{{ part.text }}</span>
           {% endfor %}
         </h1>
-        <p class="text-muted">{{ tournament.description }}</p>
+        <div class="hero__desc text-muted">{{ tournament.description|safe_html }}</div>
         <div class="hero__actions">
-          <a href="{% url 'tournaments:apply' %}?tournament={{ tournament.slug }}" class="btn btn-primary">Подати заявку {% include "includes/arrow.html" %}</a>
-          <a href="{% url 'tournaments:home' %}" class="btn btn-ghost">Всі турніри</a>
+          <a href="{% url 'tournaments:apply' %}?tournament={{ tournament.slug }}" class="btn btn-primary">{% render_block "home" "hero_btn_apply" %} {% include "includes/arrow.html" %}</a>
+          <a href="{% url 'tournaments:home' %}" class="btn btn-ghost">{% block_plain "detail" "btn_all_tournaments" %}</a>
         </div>
       </div>
-      <div class="hero__card">
-        <div class="eyebrow text-accent">{{ tournament.icon_hint }}</div>
-        {% if tournament.show_countdown %}
-        {% include "includes/countdown.html" with starts_at=tournament.starts_at %}
-        {% endif %}
-        <div class="hero__card-divider"></div>
-        <div class="mono cup-meta-value">{{ tournament.dates_display }}</div>
-        <div class="mono cup-meta-value">{{ tournament.location }}</div>
+      <div class="hero__card-stage">
+        <div class="hero__card tournament-hero__card">
+          <div class="tournament-hero__card-top">
+            <div class="eyebrow text-accent">{{ tournament.icon_hint }}</div>
+            {% if tournament.show_countdown %}
+            {% include "includes/countdown.html" with starts_at=tournament.starts_at compact=True %}
+            {% endif %}
+          </div>
+          <div class="hero__card-divider"></div>
+          <div class="hero__card-grid tournament-hero__card-meta">
+            <div>
+              <div class="eyebrow cup-label-sm">{% render_block "home" "label_dates" %}</div>
+              <div class="mono cup-meta-value">{{ tournament.dates_display }}</div>
+            </div>
+            <div>
+              <div class="eyebrow cup-label-sm">{% render_block "home" "label_teams" %}</div>
+              <div class="mono cup-meta-value">{{ tournament.teams_count }}</div>
+            </div>
+            <div>
+              <div class="eyebrow cup-label-sm">{% render_block "home" "label_location" %}</div>
+              <div class="mono cup-meta-value">{{ tournament.location }}</div>
+            </div>
+            <div>
+              <div class="eyebrow cup-label-sm">{% render_block "home" "label_format" %}</div>
+              <div class="mono cup-meta-value">{{ tournament.format_text }}</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -45,21 +65,21 @@
   <div class="container">
     <div class="section-head">
       <div>
-        <div class="eyebrow">01 / Про турнір</div>
+        <div class="eyebrow">{% block_plain "detail" "about_eyebrow" %}</div>
         <h2>{{ tournament.tagline }}</h2>
       </div>
     </div>
     <div class="tournament-about-grid">
       <div class="tournament-about-cell">
-        <div class="eyebrow">Формат</div>
+        <div class="eyebrow">{% render_block "home" "label_format" %}</div>
         <div class="display cup-about-value">{{ tournament.format_text }}</div>
       </div>
       <div class="tournament-about-cell">
-        <div class="eyebrow">Внесок</div>
-        <div class="display cup-about-value">{{ tournament.fee_uah }} ₴</div>
+        <div class="eyebrow">{% block_plain "detail" "about_label_fee" %}</div>
+        <div class="display cup-about-value">{{ tournament.fee_uah }} {% block_plain "detail" "currency_suffix" %}</div>
       </div>
       <div class="tournament-about-cell">
-        <div class="eyebrow">Нагороди</div>
+        <div class="eyebrow">{% block_plain "detail" "about_label_prizes" %}</div>
         <div class="cup-about-text">{{ tournament.prize }}</div>
       </div>
     </div>
@@ -75,8 +95,8 @@
   <div class="container">
     <div class="section-head">
       <div>
-        <div class="eyebrow">02 / Сітка</div>
-        <h2>Плей-оф</h2>
+        <div class="eyebrow">{% block_plain "detail" "bracket_eyebrow" %}</div>
+        <h2>{% block_plain "detail" "bracket_title" %}</h2>
       </div>
     </div>
     {% include "tournaments/partials/bracket.html" %}
@@ -87,13 +107,13 @@
   <div class="container">
     <div class="section-head">
       <div>
-        <div class="eyebrow">03 / Розклад</div>
-        <h2>Матчі</h2>
+        <div class="eyebrow">{% block_plain "detail" "schedule_eyebrow" %}</div>
+        <h2>{% block_plain "detail" "schedule_title" %}</h2>
       </div>
     </div>
     <div class="schedule-scroll card">
       <div class="schedule-row schedule-row--head">
-        <span>День</span><span>Час</span><span>Матч</span><span>Вік</span><span>Рах.</span><span>Поле</span>
+        <span>{% block_plain "detail" "col_day" %}</span><span>{% block_plain "detail" "col_time" %}</span><span>{% block_plain "detail" "col_match" %}</span><span>{% block_plain "detail" "col_age" %}</span><span>{% block_plain "detail" "col_score" %}</span><span>{% block_plain "detail" "col_field" %}</span>
       </div>
       {% for m in schedule %}
       <div class="schedule-row schedule-row--{{ m.status }}">
@@ -113,35 +133,35 @@
   <div class="container">
     <div class="section-head">
       <div>
-        <div class="eyebrow">04 / Статистика</div>
-        <h2>Цифри та бомбардири</h2>
+        <div class="eyebrow">{% block_plain "detail" "stats_eyebrow" %}</div>
+        <h2>{% block_plain "detail" "stats_title" %}</h2>
       </div>
     </div>
     <div class="stats-row">
       <div class="stat-cell">
         <div class="display mono stat-cell__value">{{ tournament.teams_count }}</div>
-        <div class="stat-cell__label">Команд</div>
+        <div class="stat-cell__label">{% render_block "archive" "label_teams" %}</div>
       </div>
       <div class="stat-cell">
         <div class="display mono stat-cell__value">{{ tournament.matches_count }}</div>
-        <div class="stat-cell__label">Матчів</div>
+        <div class="stat-cell__label">{% render_block "archive" "label_matches" %}</div>
       </div>
       {% if tournament.show_goals_stat %}
       <div class="stat-cell">
         <div class="display mono stat-cell__value">{{ tournament.goals_count }}</div>
-        <div class="stat-cell__label">Голів</div>
+        <div class="stat-cell__label">{% render_block "archive" "label_goals" %}</div>
       </div>
       {% endif %}
       {% if tournament.show_wins_stat %}
       <div class="stat-cell">
         <div class="display mono stat-cell__value">{{ tournament.wins_count }}</div>
-        <div class="stat-cell__label">Перемог</div>
+        <div class="stat-cell__label">{% block_plain "detail" "label_wins" %}</div>
       </div>
       {% endif %}
       {% if tournament.show_losses_stat %}
       <div class="stat-cell">
         <div class="display mono stat-cell__value">{{ tournament.losses_count }}</div>
-        <div class="stat-cell__label">Поразок</div>
+        <div class="stat-cell__label">{% block_plain "detail" "label_losses" %}</div>
       </div>
       {% endif %}
     </div>
@@ -162,8 +182,8 @@
   <div class="container">
     <div class="section-head">
       <div>
-        <div class="eyebrow">05 / Команди</div>
-        <h2>Учасники</h2>
+        <div class="eyebrow">{% block_plain "detail" "teams_eyebrow" %}</div>
+        <h2>{% block_plain "detail" "teams_title" %}</h2>
       </div>
     </div>
     <div class="teams-grid">
@@ -182,12 +202,12 @@
   <div class="hero__glow"></div>
   <div class="container tournament-cta__grid">
     <div>
-      <div class="eyebrow text-accent">· РЕЄСТРАЦІЯ ·</div>
-      <h2 class="display cup-cta-title">Готові<br><span class="text-accent">грати?</span></h2>
-      <p class="text-muted">Заявка приймається від офіційних представників школи або клубу.</p>
+      <div class="eyebrow text-accent">{% block_plain "detail" "cta_eyebrow" %}</div>
+      <h2 class="display cup-cta-title">{% render_block "detail" "cta_title" %}</h2>
+      <p class="text-muted">{% block_plain "detail" "cta_desc" %}</p>
     </div>
     <div class="cup-cta-actions">
-      <a href="{% url 'tournaments:apply' %}?tournament={{ tournament.slug }}" class="btn btn-primary">Подати заявку {% include "includes/arrow.html" %}</a>
+      <a href="{% url 'tournaments:apply' %}?tournament={{ tournament.slug }}" class="btn btn-primary">{% render_block "home" "hero_btn_apply" %} {% include "includes/arrow.html" %}</a>
     </div>
   </div>
 </section>

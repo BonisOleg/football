@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
 from django.views import View
 from django.views.generic import DetailView, TemplateView
 
@@ -8,20 +9,30 @@ from .mock_data import (
     ARCHIVE_GALLERY,
     BRACKET_MOCK,
     GALLERY_TEASER,
-    MARQUEE_ITEMS,
     SCHEDULE_MOCK,
     TEAMS_POOL,
     TOP_SCORERS,
 )
 from .models import Application, ArchiveEdition, Tournament
+from .season_timeline import (
+    find_wheel_slot,
+    get_calendar_season_slots,
+    get_home_season_timeline,
+    presentation_from_db,
+)
+from .context_processors import _load_site_blocks
 from .services import (
     get_archive_gallery,
     get_bracket,
     get_gallery_teaser,
+    get_apply_tournaments,
+    get_published_tournaments,
+    tournament_is_open_for_apply,
     get_schedule,
     get_teams_pool,
     get_top_scorers,
 )
+from .utils.site_blocks_data import get_hub_stats, get_marquee_items
 
 
 class HomeView(TemplateView):
@@ -29,23 +40,23 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        tournaments = list(Tournament.objects.filter(is_published=True))
+        wheel_slots, active_wheel_index = get_home_season_timeline()
+        active_slot = wheel_slots[active_wheel_index] if wheel_slots else None
+        calendar_slots = get_calendar_season_slots(wheel_slots)
         gallery = get_gallery_teaser()
+        site_blocks = _load_site_blocks()
         ctx.update(
             {
-                "tournaments": tournaments,
-                "active_tournament": tournaments[0] if tournaments else None,
-                "marquee_items": MARQUEE_ITEMS,
+                "wheel_slots": wheel_slots,
+                "active_wheel_index": active_wheel_index,
+                "active_slot": active_slot,
+                "calendar_slots": calendar_slots,
+                "marquee_items": get_marquee_items(site_blocks),
                 "gallery_teaser": gallery or GALLERY_TEASER,
                 "gallery_from_db": bool(gallery),
-                "hub_stats": [
-                    {"value": 208, "label": "Команд за рік", "hint": "ACROSS 4 EVENTS"},
-                    {"value": 316, "label": "Матчів", "hint": "REGULAR + PLAYOFF"},
-                    {"value": 1381, "label": "Голів", "hint": "2025 SEASON"},
-                    {"value": 28, "label": "Міст-учасників", "hint": "UA + EU"},
-                ],
+                "hub_stats": get_hub_stats(site_blocks),
                 "current_nav": "hub",
-                "page_theme": tournaments[0].theme_class if tournaments else "theme-spring",
+                "page_theme": active_slot.presentation.theme_class if active_slot else "theme-spring",
             }
         )
         return ctx
@@ -120,20 +131,23 @@ class ApplicationView(View):
 
     def get(self, request, *args, **kwargs):
         preset = request.GET.get("tournament", "")
-        form = ApplicationForm(preset_slug=preset or None)
+        tournaments = get_apply_tournaments()
+        form = ApplicationForm(preset_slug=preset or None, open_tournaments=tournaments)
         tournament = None
         if preset:
-            tournament = Tournament.objects.filter(slug=preset, is_published=True).first()
+            candidate = Tournament.objects.filter(slug=preset, is_published=True).first()
+            if candidate and tournament_is_open_for_apply(candidate):
+                tournament = candidate
         if not tournament and form.initial.get("tournament"):
             tournament = Tournament.objects.filter(pk=form.initial["tournament"]).first()
-        if not tournament:
-            tournament = Tournament.objects.filter(is_published=True).first()
+        if not tournament and tournaments:
+            tournament = tournaments[0]
         return render(
             request,
             self.template_name,
             {
                 "form": form,
-                "tournaments": Tournament.objects.filter(is_published=True),
+                "tournaments": tournaments,
                 "selected_tournament": tournament,
                 "current_nav": "apply",
                 "page_theme": tournament.theme_class if tournament else "theme-spring",
@@ -172,14 +186,17 @@ class ApplicationView(View):
         )
 
     def _form_context(self, form, tournament_id):
+        tournaments = get_apply_tournaments()
         tournament = None
         if tournament_id:
-            tournament = Tournament.objects.filter(pk=tournament_id).first()
-        if not tournament:
-            tournament = Tournament.objects.filter(is_published=True).first()
+            candidate = Tournament.objects.filter(pk=tournament_id).first()
+            if candidate and tournament_is_open_for_apply(candidate):
+                tournament = candidate
+        if not tournament and tournaments:
+            tournament = tournaments[0]
         return {
             "form": form,
-            "tournaments": Tournament.objects.filter(is_published=True),
+            "tournaments": tournaments,
             "selected_tournament": tournament,
             "current_nav": "apply",
             "page_theme": tournament.theme_class if tournament else "theme-spring",
@@ -190,15 +207,37 @@ class TournamentDataPartialView(View):
     """HTMX: return hero panel HTML for season wheel."""
 
     def get(self, request, slug):
-        tournament = get_object_or_404(Tournament, slug=slug, is_published=True)
         index = int(request.GET.get("index", 0))
-        count = Tournament.objects.filter(is_published=True).count()
+        edition_year_raw = request.GET.get("edition_year")
+        edition_year = int(edition_year_raw) if edition_year_raw else None
+
+        wheel_slots, _ = get_home_season_timeline()
+        slot = find_wheel_slot(slug, edition_year=edition_year)
+
+        if slot is None:
+            tournament = get_object_or_404(Tournament, slug=slug, is_published=True)
+            return render(
+                request,
+                "tournaments/partials/hero_row.html",
+                {
+                    "tournament": presentation_from_db(tournament),
+                    "is_virtual": False,
+                    "apply_url": f"{reverse('tournaments:apply')}?tournament={tournament.slug}",
+                    "detail_url": tournament.get_absolute_url(),
+                    "index": index,
+                    "tournaments_count": len(wheel_slots),
+                },
+            )
+
         return render(
             request,
             "tournaments/partials/hero_row.html",
             {
-                "tournament": tournament,
+                "tournament": slot.presentation,
+                "is_virtual": slot.is_virtual,
+                "apply_url": slot.apply_url,
+                "detail_url": slot.detail_url,
                 "index": index,
-                "tournaments_count": count,
+                "tournaments_count": len(wheel_slots),
             },
         )

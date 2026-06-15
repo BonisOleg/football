@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static cup_tags %}
 
-{% block title %}RUH LEO CUP — Футбольні турніри у Львові{% endblock %}
+{% block title %}{% block_plain "site" "home_page_title" %}{% endblock %}
 {% block body_theme %}{{ page_theme }}{% endblock %}
 
 {% block page_css %}
@@ -9,46 +9,50 @@
 {% endblock %}
 
 {% block content %}
-<section class="hero" id="home-hero" data-season-wheel data-tournaments-count="{{ tournaments|length }}">
+<section class="hero{% if active_slot and active_slot.presentation.hero_image_url %} hero--has-bg{% endif %}" id="home-hero" data-season-wheel data-initial-wheel-index="{{ active_wheel_index }}" data-tournaments-count="{{ wheel_slots|length }}"{% if active_slot and active_slot.presentation.hero_image_url %} data-hero-bg="{{ active_slot.presentation.hero_image_url }}"{% endif %}>
+  {% if active_slot and active_slot.presentation.hero_image_url %}
+  <div class="hero__bg" style="background-image: url('{{ active_slot.presentation.hero_image_url }}');" aria-hidden="true"></div>
+  {% endif %}
   <div class="hero__glow"></div>
   <div class="container hero__container">
     <div class="hero__eyebrow-row">
       <div class="pill accent">
         <span class="live-dot"></span>
-        Заявки відкриті · сезон {% now "Y" %}
+        {% render_block "home" "hero_eyebrow" %}
       </div>
-      <div class="mono hero__location-tag">ЛЬВІВ · UA · {% now "Y" %}</div>
+      <div class="mono hero__location-tag">{% render_block "home" "location_tag" %}</div>
     </div>
 
     <div id="hero-dynamic" data-theme-target>
-      {% if active_tournament %}
-      {% include "tournaments/partials/hero_row.html" with tournament=active_tournament index=0 tournaments_count=tournaments|length %}
+      {% if active_slot %}
+      {% include "tournaments/partials/hero_row.html" with tournament=active_slot.presentation is_virtual=active_slot.is_virtual apply_url=active_slot.apply_url detail_url=active_slot.detail_url index=active_wheel_index tournaments_count=wheel_slots|length %}
       {% endif %}
     </div>
 
-    <div class="hero__wheel">
-      <button type="button" class="hero__wheel-btn hero__wheel-btn--prev" data-wheel-prev aria-label="Попередній сезон">
+    <div class="hero__wheel{% if active_wheel_index > 0 %} hero__wheel--has-past{% endif %}">
+      <button type="button" class="hero__wheel-btn hero__wheel-btn--prev" data-wheel-prev aria-label="{% block_plain "site" "wheel_prev_aria" %}">
         {% include "includes/arrow.html" with direction="left" %}
       </button>
       <div class="hero__wheel-track" role="tablist">
-        {% for t in tournaments %}
+        {% for slot in wheel_slots %}
         <button type="button"
-                class="hero__wheel-item hero__wheel-item--{{ t.theme_class }}{% if forloop.first %} is-active{% endif %}"
+                class="hero__wheel-item hero__wheel-item--{{ slot.presentation.theme_class }}{% if slot.wheel_index == active_wheel_index %} is-active{% endif %}"
                 role="tab"
-                aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
-                data-wheel-index="{{ forloop.counter0 }}"
-                data-slug="{{ t.slug }}"
-                data-theme="{{ t.theme_class }}"
-                data-partial-url="{% url 'tournaments:hero_partial' t.slug %}?index={{ forloop.counter0 }}">
+                aria-selected="{% if slot.wheel_index == active_wheel_index %}true{% else %}false{% endif %}"
+                data-wheel-index="{{ slot.wheel_index }}"
+                data-slug="{{ slot.presentation.slug }}"
+                data-theme="{{ slot.presentation.theme_class }}"
+                data-hero-bg="{{ slot.presentation.hero_image_url|default:'' }}"
+                data-partial-url="{% url 'tournaments:hero_partial' slot.presentation.slug %}?index={{ slot.wheel_index }}&edition_year={{ slot.presentation.starts_at.year }}">
           <span class="hero__wheel-item-head">
-            {% include "includes/season_icon.html" with season=t.season_en size=16 %}
+            {% include "includes/season_icon.html" with season=slot.presentation.season_en size=16 %}
           </span>
-          <span class="display cup-wheel-title">{{ t.title }}</span>
-          <span class="cup-wheel-meta">{{ t.season }} · {{ t.year }}</span>
+          <span class="display cup-wheel-title">{{ slot.presentation.title }}</span>
+          <span class="cup-wheel-meta">{{ slot.presentation.season }} · {{ slot.presentation.year_label }}</span>
         </button>
         {% endfor %}
       </div>
-      <button type="button" class="hero__wheel-btn hero__wheel-btn--next" data-wheel-next aria-label="Наступний сезон">
+      <button type="button" class="hero__wheel-btn hero__wheel-btn--next" data-wheel-next aria-label="{% block_plain "site" "wheel_next_aria" %}">
         {% include "includes/arrow.html" %}
       </button>
     </div>
@@ -70,11 +74,11 @@
   <div class="container">
     <div class="section-head">
       <div>
-        <div class="eyebrow">01 / Цифри сезону</div>
-        <h2>Один рік. <span class="text-accent">Чотири турніри.</span></h2>
+        <div class="eyebrow">{% render_block "home" "stats_eyebrow" %}</div>
+        <h2>{% render_block "home" "stats_title" %}</h2>
       </div>
       <p class="text-muted section-head__aside">
-        Команди з усієї України збираються у Львові чотири рази на рік, щоб боротися за головний трофей.
+        {% render_block "home" "stats_aside" %}
       </p>
     </div>
     <div class="stats-grid">
@@ -82,10 +86,10 @@
       <div class="stat-cell">
         <div class="stat-cell__value-row">
           <span class="display mono stat-cell__value" data-stat-counter data-value="{{ stat.value }}">0</span>
-          <span class="mono stat-cell__plus">+</span>
+          <span class="mono stat-cell__plus">{% render_block "home" "stat_plus" %}</span>
         </div>
-        <div class="stat-cell__label">{{ stat.label }}</div>
-        <div class="eyebrow stat-cell__hint">{{ stat.hint }}</div>
+        <div class="stat-cell__label">{{ stat.label|safe_html }}</div>
+        <div class="eyebrow stat-cell__hint">{{ stat.hint|safe_html }}</div>
       </div>
       {% endfor %}
     </div>
@@ -96,35 +100,40 @@
   <div class="container">
     <div class="section-head">
       <div>
-        <div class="eyebrow">02 / Календар</div>
-        <h2>Календар сезону</h2>
+        <div class="eyebrow">{% render_block "home" "calendar_eyebrow" %}</div>
+        <h2>{% render_block "home" "calendar_title" %}</h2>
       </div>
     </div>
     <div class="seasons-recap">
-      {% for t in tournaments %}
-      <a href="{{ t.get_absolute_url }}" class="season-card {{ t.theme_class }}">
+      {% for slot in calendar_slots %}
+      <a href="{% if slot.detail_url %}{{ slot.detail_url }}{% else %}{{ slot.apply_url }}{% endif %}" class="season-card {{ slot.presentation.theme_class }}">
         <div class="season-card__head">
-          <span class="pill"><span class="dot"></span> {{ t.season }}</span>
+          <span class="pill"><span class="dot"></span> {{ slot.presentation.season }}</span>
+          {% if slot.is_virtual %}
+          <span class="pill pill--soon">{% render_block "home" "soon_badge" %}</span>
+          {% endif %}
         </div>
-        <h3 class="display season-card__title">{{ t.title }}</h3>
-        <p class="text-muted">{{ t.subtitle }}</p>
+        <h3 class="display season-card__title">{{ slot.presentation.title }}</h3>
+        <p class="text-muted">{{ slot.presentation.subtitle }} · {{ slot.presentation.year_label }}</p>
         <div class="season-card__meta">
           <div>
-            <div class="eyebrow cup-label-sm">Дати</div>
-            <div class="mono cup-meta-value">{{ t.dates_display }}</div>
+            <div class="eyebrow cup-label-sm">{% render_block "home" "label_dates" %}</div>
+            <div class="mono cup-meta-value">{{ slot.presentation.dates_display }}</div>
           </div>
           <div>
-            <div class="eyebrow cup-label-sm">Команд</div>
-            <div class="mono cup-meta-value">{{ t.teams_count }}</div>
+            <div class="eyebrow cup-label-sm">{% render_block "home" "label_teams" %}</div>
+            <div class="mono cup-meta-value">{{ slot.presentation.teams_count }}</div>
           </div>
         </div>
-        <div class="season-card__footer">
-          <span class="mono cup-tagline">{{ t.tagline|upper }}</span>
-          <span class="text-accent">{% include "includes/arrow.html" %}</span>
+        <div class="season-card__bottom">
+          <div class="season-card__footer">
+            <span class="mono cup-tagline">{{ slot.presentation.tagline|upper }}</span>
+            <span class="text-accent">{% include "includes/arrow.html" %}</span>
+          </div>
+          {% if not slot.is_past %}
+          {% include "includes/countdown.html" with starts_at=slot.presentation.starts_at compact=True %}
+          {% endif %}
         </div>
-        {% if t.show_countdown %}
-        {% include "includes/countdown.html" with starts_at=t.starts_at compact=True %}
-        {% endif %}
       </a>
       {% endfor %}
     </div>
@@ -135,10 +144,10 @@
   <div class="container">
     <div class="section-head">
       <div>
-        <div class="eyebrow">03 / Архів</div>
-        <h2>Минулі турніри</h2>
+        <div class="eyebrow">{% render_block "home" "archive_eyebrow" %}</div>
+        <h2>{% render_block "home" "archive_title" %}</h2>
       </div>
-      <a href="{% url 'tournaments:archive' %}" class="btn btn-ghost">Дивитись усе {% include "includes/arrow.html" %}</a>
+      <a href="{% url 'tournaments:archive' %}" class="btn btn-ghost">{% render_block "home" "archive_btn_all" %} {% include "includes/arrow.html" %}</a>
     </div>
     <div class="gallery-grid">
       {% for g in gallery_teaser %}

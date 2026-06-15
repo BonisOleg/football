@@ -33,19 +33,123 @@
 }
 
 .apply-aside {
+  position: relative;
+  align-self: start;
+  height: auto;
   background: var(--bg-1);
   border: 1px solid var(--line);
   border-radius: 20px;
-  padding: 28px;
+  padding: 24px 26px;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.apply-aside::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    ellipse 90% 70% at 50% 0%,
+    color-mix(in oklab, var(--accent) 14%, transparent),
+    transparent 72%
+  );
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .apply-aside:hover {
+    border-color: color-mix(in oklab, var(--accent) 42%, var(--line));
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--accent) 18%, transparent),
+      0 10px 34px color-mix(in oklab, var(--accent) 16%, transparent);
+    animation: apply-aside-pulse 1.8s ease-in-out infinite;
+  }
+
+  .apply-aside:hover::before {
+    opacity: 1;
+  }
+}
+
+@keyframes apply-aside-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--accent) 16%, transparent),
+      0 8px 28px color-mix(in oklab, var(--accent) 12%, transparent);
+  }
+
+  50% {
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--accent) 28%, transparent),
+      0 12px 40px color-mix(in oklab, var(--accent) 22%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .apply-aside {
+    transition: border-color 0.25s ease;
+  }
+
+  .apply-aside::before {
+    transition: none;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .apply-aside:hover {
+      animation: none;
+      box-shadow: 0 8px 28px color-mix(in oklab, var(--accent) 14%, transparent);
+    }
+  }
+}
+
+.apply-aside__lead {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.apply-aside__lead p {
+  margin: 0;
 }
 
 .apply-aside__info {
-  margin: 24px 0;
+  margin: 20px 0 0;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding-top: 22px;
+  gap: 22px;
+  padding-top: 20px;
   border-top: 1px solid var(--line);
+}
+
+.apply-aside__row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.apply-aside .cup-label-sm {
+  font-size: 10px;
+}
+
+.apply-aside .cup-meta-value {
+  font-size: 15px;
+  margin-top: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.apply-aside .cup-meta-value a {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.apply-aside__dates {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
 }
 
 .form-alert {
@@ -101,12 +205,16 @@
 }
 
 .cup-aside-title {
-  font-size: 32px;
-  margin: 12px 0;
+  font-size: clamp(28px, 4vw, 36px);
+  margin: 10px 0 12px;
+  line-height: 1;
+  overflow-wrap: anywhere;
 }
 
 .cup-aside-tournament {
-  font-size: 22px;
+  font-size: clamp(20px, 3vw, 24px);
+  line-height: 1.15;
+  overflow-wrap: anywhere;
 }
 
 .apply-hero__lead {
@@ -127,4 +235,25 @@
 
 #id_tournament {
   display: none;
+}
+
+@media (max-width: 767px) {
+  .apply-aside {
+    padding: 20px 18px;
+  }
+
+  .apply-aside__info {
+    gap: 18px;
+    padding-top: 18px;
+  }
+
+  .apply-aside .cup-meta-value {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .apply-aside {
+    padding: 22px 22px;
+  }
 }

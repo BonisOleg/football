@@ -1,4 +1,4 @@
-/* RUH LEO CUP — Football Tournament Redesign
+/* Football Generation — Football Tournament Redesign
    Dark sport-energetic theme with per-season accents */
 
 @import url('https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
@@ -26,6 +26,8 @@
   --winter-deep: oklch(0.58 0.16 225);
   --kids: oklch(0.74 0.20 20);            /* fire red */
   --kids-deep: oklch(0.55 0.20 20);
+  --summer: oklch(0.88 0.19 78);          /* sun gold */
+  --summer-deep: oklch(0.64 0.18 72);
 
   /* Active accent — overridden per page */
   --accent: var(--spring);
@@ -98,6 +100,7 @@ body::before {
 
 /* Page accent classes */
 .theme-spring { --accent: var(--spring); --accent-deep: var(--spring-deep); --accent-tint: color-mix(in oklab, var(--spring) 12%, transparent); }
+.theme-summer { --accent: var(--summer); --accent-deep: var(--summer-deep); --accent-tint: color-mix(in oklab, var(--summer) 12%, transparent); }
 .theme-autumn { --accent: var(--autumn); --accent-deep: var(--autumn-deep); --accent-tint: color-mix(in oklab, var(--autumn) 12%, transparent); }
 .theme-winter { --accent: var(--winter); --accent-deep: var(--winter-deep); --accent-tint: color-mix(in oklab, var(--winter) 12%, transparent); }
 .theme-kids   { --accent: var(--kids);   --accent-deep: var(--kids-deep);   --accent-tint: color-mix(in oklab, var(--kids) 12%, transparent); }

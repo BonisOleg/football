@@ -6,13 +6,54 @@ from django.utils import timezone
 
 
 class SiteSettings(models.Model):
+    site_name = models.CharField(
+        max_length=128,
+        default="Football Generation",
+        verbose_name="Назва сайту",
+    )
     phone = models.CharField(max_length=32, default="+38 068 890 28 44", verbose_name="Телефон")
-    email = models.EmailField(default="ruhcupleocup@gmail.com", verbose_name="Email")
+    email = models.EmailField(default="diegomara@ukr.net", verbose_name="Email")
     city = models.CharField(max_length=64, default="Львів, Україна", verbose_name="Місто")
     url_instagram = models.URLField(blank=True, verbose_name="Instagram")
     url_telegram = models.URLField(blank=True, verbose_name="Telegram")
     url_youtube = models.URLField(blank=True, verbose_name="YouTube")
     url_tiktok = models.URLField(blank=True, verbose_name="TikTok")
+    header_cta_label = models.CharField(
+        max_length=64,
+        default="Подати заявку",
+        verbose_name="Текст кнопки в хедері",
+    )
+    footer_about = models.TextField(
+        blank=True,
+        default=(
+            "Наймасовіші футбольні турніри Західної України. "
+            "Пʼять сезонів — пʼять фестивалів футболу для дітей від 6 років."
+        ),
+        verbose_name="Текст про організацію (footer)",
+    )
+    footer_copyright = models.CharField(
+        max_length=256,
+        blank=True,
+        default="© {year} Football Generation · ALL RIGHTS RESERVED",
+        verbose_name="Copyright (footer)",
+        help_text="Використовуйте {year} для поточного року.",
+    )
+    logo = models.ImageField(
+        upload_to="site/",
+        blank=True,
+        verbose_name="Логотип (override)",
+        help_text="Якщо порожньо — використовується стандартний логотип Football Generation.",
+    )
+    season_start = models.DateField(
+        null=True,
+        blank=True,
+        verbose_name="Початок сезону",
+    )
+    season_end = models.DateField(
+        null=True,
+        blank=True,
+        verbose_name="Кінець сезону",
+    )
 
     class Meta:
         verbose_name = "Налаштування сайту"
@@ -26,16 +67,136 @@ class SiteSettings(models.Model):
         obj, _ = cls.objects.get_or_create(pk=1)
         return obj
 
+    def formatted_copyright(self) -> str:
+        from django.utils import timezone
+
+        template = self.footer_copyright or "© {year} Football Generation · ALL RIGHTS RESERVED"
+        return template.format(year=timezone.now().year)
+
+
+class HomeHeroSettings(SiteSettings):
+    class Meta:
+        proxy = True
+        verbose_name = "Головний банер"
+        verbose_name_plural = "Головний банер"
+
+
+class HomeMarqueeSettings(SiteSettings):
+    class Meta:
+        proxy = True
+        verbose_name = "Бігучий рядок"
+        verbose_name_plural = "Бігучий рядок"
+
+
+class HomeSeasonStatsSettings(SiteSettings):
+    class Meta:
+        proxy = True
+        verbose_name = "Секція «Один рік 4 турніри»"
+        verbose_name_plural = "Секція «Один рік 4 турніри»"
+
+
+class HomeCalendarSettings(SiteSettings):
+    class Meta:
+        proxy = True
+        verbose_name = "Секція «Календар сезону»"
+        verbose_name_plural = "Секція «Календар сезону»"
+
+
+class HomeArchiveTeaserSettings(SiteSettings):
+    class Meta:
+        proxy = True
+        verbose_name = "Секція «Архів на головній»"
+        verbose_name_plural = "Секція «Архів на головній»"
+
+
+class ApplyHeroSettings(SiteSettings):
+    class Meta:
+        proxy = True
+        verbose_name = "Секція «Банер заявки»"
+        verbose_name_plural = "Секція «Банер заявки»"
+
+
+class ApplyAsideSettings(SiteSettings):
+    class Meta:
+        proxy = True
+        verbose_name = "Секція «Контакти заявки»"
+        verbose_name_plural = "Секція «Контакти заявки»"
+
+
+class ArchiveHeroSettings(SiteSettings):
+    class Meta:
+        proxy = True
+        verbose_name = "Банер архіву"
+        verbose_name_plural = "Банер архіву"
+
+
+class ArchiveEditionsSectionSettings(SiteSettings):
+    class Meta:
+        proxy = True
+        verbose_name = "Секція «Результати за роки»"
+        verbose_name_plural = "Секція «Результати за роки»"
+
+
+class ArchiveGallerySectionSettings(SiteSettings):
+    class Meta:
+        proxy = True
+        verbose_name = "Секція «Галерея архіву»"
+        verbose_name_plural = "Секція «Галерея архіву»"
+
+
+class FooterSettings(SiteSettings):
+    class Meta:
+        proxy = True
+        verbose_name = "Футер"
+        verbose_name_plural = "Футер"
+
+
+class HeaderNavigationSettings(SiteSettings):
+    class Meta:
+        proxy = True
+        verbose_name = "Хедер і навігація"
+        verbose_name_plural = "Хедер і навігація"
+
+
+class ApplyFormSettings(SiteSettings):
+    class Meta:
+        proxy = True
+        verbose_name = "Форма заявки"
+        verbose_name_plural = "Форма заявки"
+
+
+class ApplySuccessSettings(SiteSettings):
+    class Meta:
+        proxy = True
+        verbose_name = "Після заявки"
+        verbose_name_plural = "Після заявки"
+
+
+class DetailPageSettings(SiteSettings):
+    class Meta:
+        proxy = True
+        verbose_name = "Сторінка турніру"
+        verbose_name_plural = "Сторінка турніру"
+
+
+class SiteSeoSettings(SiteSettings):
+    class Meta:
+        proxy = True
+        verbose_name = "SEO і заголовки"
+        verbose_name_plural = "SEO і заголовки"
+
 
 class Tournament(models.Model):
     class ThemeClass(models.TextChoices):
         SPRING = "theme-spring", "Весна — лайм"
+        SUMMER = "theme-summer", "Літо — сонячний"
         AUTUMN = "theme-autumn", "Осінь — бурштин"
         WINTER = "theme-winter", "Зима — блакитний"
         KIDS = "theme-kids", "Kids — червоний"
 
     class SeasonIcon(models.TextChoices):
         SPRING = "Spring", "Весна"
+        SUMMER = "Summer", "Літо"
         AUTUMN = "Autumn", "Осінь"
         WINTER = "Winter", "Зима"
         KIDS = "Kids", "Kids"
@@ -162,22 +323,77 @@ class Tournament(models.Model):
     @property
     def nav_label(self) -> str:
         if self.slug in ("leo-cup-autumn", "leo-cup-osen"):
-            return "Leo Cup Осінь"
+            return "FG Autumn"
+        if self.slug == "fg-summer-cup":
+            return "FG Summer"
         if self.slug == "ruh-kids-cup":
-            return "Ruh Kids"
+            return "FG Kids"
         if self.slug == "leo-cup":
-            return "Leo Cup"
-        return "Ruh Cup"
+            return "FG Spring"
+        return "FG Cup"
 
     @property
     def accent_var(self) -> str:
         mapping = {
             "theme-spring": "spring",
+            "theme-summer": "summer",
             "theme-autumn": "autumn",
             "theme-winter": "winter",
             "theme-kids": "kids",
         }
         return mapping.get(self.theme_class, "spring")
+
+    @property
+    def hero_title_parts(self) -> list[dict[str, object]]:
+        if self.title.startswith("FG "):
+            rest = self.title[3:].split()
+            parts: list[dict[str, object]] = [
+                {"text": "Football Generation", "accent": False, "brand": True},
+            ]
+            for word in rest:
+                parts.append({"text": word, "accent": True, "brand": False})
+            return parts
+
+        words = self.title.split()
+        return [
+            {"text": word, "accent": index > 0, "brand": False}
+            for index, word in enumerate(words)
+        ]
+
+
+class SpringSeasonTournament(Tournament):
+    class Meta:
+        proxy = True
+        verbose_name = "Сезон «Весна»"
+        verbose_name_plural = "Сезон «Весна»"
+
+
+class SummerSeasonTournament(Tournament):
+    class Meta:
+        proxy = True
+        verbose_name = "Сезон «Літо»"
+        verbose_name_plural = "Сезон «Літо»"
+
+
+class AutumnSeasonTournament(Tournament):
+    class Meta:
+        proxy = True
+        verbose_name = "Сезон «Осінь»"
+        verbose_name_plural = "Сезон «Осінь»"
+
+
+class WinterSeasonTournament(Tournament):
+    class Meta:
+        proxy = True
+        verbose_name = "Сезон «Зима»"
+        verbose_name_plural = "Сезон «Зима»"
+
+
+class KidsSeasonTournament(Tournament):
+    class Meta:
+        proxy = True
+        verbose_name = "Сезон «Kids»"
+        verbose_name_plural = "Сезон «Kids»"
 
 
 class AgeGroup(models.Model):
@@ -409,6 +625,52 @@ class GalleryImage(models.Model):
 
     def __str__(self) -> str:
         return self.label or self.alt_text
+
+
+class SiteBlock(models.Model):
+    class ContentType(models.TextChoices):
+        TEXT = "text", "Текст"
+        IMAGE = "image", "Фото"
+        VIDEO = "video", "Відео"
+
+    class Page(models.TextChoices):
+        HOME = "home", "Головна"
+        HEADER = "header", "Хедер"
+        FOOTER = "footer", "Футер"
+        APPLY = "apply", "Заявка"
+        ARCHIVE = "archive", "Архів"
+        DETAIL = "detail", "Сторінка турніру"
+        SITE = "site", "SEO"
+
+    page = models.CharField(max_length=32, choices=Page.choices, verbose_name="Сторінка")
+    key = models.CharField(max_length=64, verbose_name="Ключ блоку")
+    label = models.CharField(max_length=128, verbose_name="Назва в адмінці")
+    content_type = models.CharField(
+        max_length=16,
+        choices=ContentType.choices,
+        default=ContentType.TEXT,
+        verbose_name="Тип контенту",
+    )
+    text_html = models.TextField(blank=True, verbose_name="Текст (HTML)")
+    image = models.ImageField(upload_to="blocks/", blank=True, verbose_name="Зображення")
+    video_url = models.URLField(blank=True, verbose_name="URL відео (YouTube/Vimeo)")
+    sort_order = models.PositiveSmallIntegerField(default=0, verbose_name="Порядок")
+    is_active = models.BooleanField(default=True, verbose_name="Активний")
+
+    class Meta:
+        ordering = ["page", "sort_order", "key"]
+        verbose_name = "Блок контенту"
+        verbose_name_plural = "Блоки контенту"
+        constraints = [
+            models.UniqueConstraint(fields=["page", "key"], name="unique_site_block_page_key"),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.get_page_display()} · {self.label}"
+
+    @property
+    def cache_key(self) -> str:
+        return f"{self.page}.{self.key}"
 
 
 class Application(models.Model):

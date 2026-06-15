@@ -1,3 +1,4 @@
+{% load cup_tags %}
 <div class="form-grid">
   <form class="form-box"
         method="post"
@@ -8,12 +9,12 @@
     {% csrf_token %}
     {% if form.errors %}
     <div class="form-alert form-alert--error" role="alert">
-      <p class="form-alert__title">Перевірте форму</p>
-      <p class="form-alert__text">Заповніть усі обовʼязкові поля, позначені зірочкою (*).</p>
+      <p class="form-alert__title">{% block_plain "apply" "form_error_title" %}</p>
+      <p class="form-alert__text">{% block_plain "apply" "form_error_desc" %}</p>
     </div>
     {% endif %}
-    <div class="eyebrow">01 / Турнір</div>
-    <h2 class="display cup-form-heading">Оберіть подію</h2>
+    <div class="eyebrow">{% block_plain "apply" "form_tournament_eyebrow" %}</div>
+    <h2 class="display cup-form-heading">{% block_plain "apply" "form_tournament_title" %}</h2>
 
     <div class="tournament-choice" data-tournament-choice>
       {% for t in tournaments %}
@@ -31,8 +32,8 @@
     {% if form.tournament.errors %}<p class="form-error">{{ form.tournament.errors.0 }}</p>{% endif %}
 
     <div class="form-divider"></div>
-    <div class="eyebrow">02 / Команда</div>
-    <h2 class="display cup-form-heading">Дані команди</h2>
+    <div class="eyebrow">{% block_plain "apply" "form_team_eyebrow" %}</div>
+    <h2 class="display cup-form-heading">{% block_plain "apply" "form_team_title" %}</h2>
 
     <div class="field-row{% if form.team_name.errors %} field-error{% endif %}">
       <div>
@@ -84,27 +85,27 @@
       {{ form.note }}
     </div>
 
-    <button type="submit" class="btn btn-primary cup-submit-btn">ПОДАТИ ЗАЯВКУ {% include "includes/arrow.html" %}</button>
+    <button type="submit" class="btn btn-primary cup-submit-btn">{% block_plain "apply" "submit_btn" %} {% include "includes/arrow.html" %}</button>
   </form>
 
   <aside class="apply-aside">
-    <div class="eyebrow text-accent">Контакти</div>
-    <h2 class="display cup-aside-title">Зв'яжіться з нами</h2>
-    <p class="text-muted">Ми завжди готові відповісти на ваші питання щодо участі.</p>
+    <div class="eyebrow text-accent">{% render_block "apply" "aside_eyebrow" %}</div>
+    <h2 class="display cup-aside-title">{% render_block "apply" "aside_title" %}</h2>
+    <p class="text-muted apply-aside__lead">{% render_block "apply" "aside_desc" %}</p>
     <div class="apply-aside__info">
-      <div>
-        <div class="eyebrow cup-label-sm">Телефон</div>
+      <div class="apply-aside__row">
+        <div class="eyebrow cup-label-sm">{% render_block "apply" "aside_phone_label" %}</div>
         <div class="mono cup-meta-value">{{ site.phone }}</div>
       </div>
-      <div>
-        <div class="eyebrow cup-label-sm">Email</div>
+      <div class="apply-aside__row">
+        <div class="eyebrow cup-label-sm">{% render_block "apply" "aside_email_label" %}</div>
         <div class="mono cup-meta-value"><a href="mailto:{{ site.email }}">{{ site.email }}</a></div>
       </div>
       {% if selected_tournament %}
-      <div>
-        <div class="eyebrow cup-label-sm">Обраний турнір</div>
+      <div class="apply-aside__row">
+        <div class="eyebrow cup-label-sm">{% render_block "apply" "aside_tournament_label" %}</div>
         <div class="display cup-aside-tournament">{{ selected_tournament.title }}</div>
-        <div class="text-muted">{{ selected_tournament.dates_display }}</div>
+        <div class="text-muted apply-aside__dates">{{ selected_tournament.dates_display }}</div>
       </div>
       {% endif %}
     </div>

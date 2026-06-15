@@ -1,6 +1,7 @@
+{% load cup_tags %}
 <div class="bracket-wrap">
   <div class="bracket-col">
-    <div class="eyebrow cup-bracket-label">1/4 фіналу</div>
+    <div class="eyebrow cup-bracket-label">{% block_plain "detail" "bracket_qf" %}</div>
     {% for match in bracket.r16 %}
     <div class="bracket-match bracket-match--{{ match.status }}">
       <div class="mono">{{ match.a.short }} <span class="text-accent">{{ match.sA }}</span></div>
@@ -9,7 +10,7 @@
     {% endfor %}
   </div>
   <div class="bracket-col">
-    <div class="eyebrow cup-bracket-label">1/2 фіналу</div>
+    <div class="eyebrow cup-bracket-label">{% block_plain "detail" "bracket_sf" %}</div>
     {% for match in bracket.sf %}
     <div class="bracket-match bracket-match--{{ match.status }}">
       <div class="mono">{{ match.a.short }} <span class="text-accent">{{ match.sA }}</span></div>
@@ -18,7 +19,7 @@
     {% endfor %}
   </div>
   <div class="bracket-col">
-    <div class="eyebrow cup-bracket-label">Фінал</div>
+    <div class="eyebrow cup-bracket-label">{% block_plain "detail" "bracket_final" %}</div>
     <div class="bracket-match bracket-match--{{ bracket.final.status }}">
       <div class="mono">{{ bracket.final.a.short }} <span class="text-accent">{{ bracket.final.sA }}</span></div>
       <div class="mono">{{ bracket.final.b.short }} <span class="text-accent">{{ bracket.final.sB }}</span></div>

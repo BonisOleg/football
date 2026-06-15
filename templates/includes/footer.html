@@ -1,17 +1,18 @@
+{% load cup_tags %}
 <footer class="site-footer">
   <div class="container">
     <div class="site-footer__grid">
       <div>
         <div class="site-footer__brand-row">
           {% include "includes/logo.html" with size=40 %}
-          <span class="site-footer__brand-title display">RUH · LEO CUP</span>
+          <span class="site-footer__brand-title display">{{ site.site_name|default:"Football Generation" }}</span>
         </div>
         <p class="site-footer__about">
-          Наймасовіші футбольні турніри Західної України. Чотири сезони — чотири фестивалі футболу для дітей від 6 років.
+          {% render_block "footer" "about" %}
         </p>
       </div>
       <div>
-        <div class="eyebrow eyebrow--spaced">Турніри</div>
+        <div class="eyebrow eyebrow--spaced">{% block_plain "footer" "col_tournaments" %}</div>
         <ul class="site-footer__list">
           {% for t in nav_tournaments %}
           <li>
@@ -23,7 +24,7 @@
         </ul>
       </div>
       <div>
-        <div class="eyebrow eyebrow--spaced">Контакти</div>
+        <div class="eyebrow eyebrow--spaced">{% block_plain "footer" "col_contacts" %}</div>
         <ul class="site-footer__list">
           <li class="mono">{{ site.phone }}</li>
           <li class="mono"><a href="mailto:{{ site.email }}">{{ site.email }}</a></li>
@@ -31,7 +32,7 @@
         </ul>
       </div>
       <div>
-        <div class="eyebrow eyebrow--spaced">Соцмережі</div>
+        <div class="eyebrow eyebrow--spaced">{% block_plain "footer" "col_social" %}</div>
         <div class="site-footer__social">
           {% if site.url_instagram %}
           <a href="{{ site.url_instagram }}" class="site-footer__social-btn" rel="noopener noreferrer" target="_blank" aria-label="Instagram">
@@ -57,12 +58,14 @@
       </div>
     </div>
     <div class="site-footer__bottom">
-      <div>© {% now "Y" %} RUH LEO CUP · ALL RIGHTS RESERVED</div>
+      <div>
+        {% render_block "footer" "copyright" %}
+      </div>
       <div class="site-footer__credit">
-        Сайт розроблено
+        {% block_plain "footer" "dev_credit_text" %}
         <a href="https://www.prometeylabs.com/" class="site-footer__credit-link" rel="noopener noreferrer" target="_blank">PrometeyLabs</a>
       </div>
-      <div>ФУТБОЛЬНІ ТУРНІРИ · ЛЬВІВ</div>
+      <div>{% block_plain "footer" "tagline" %}</div>
     </div>
   </div>
 </footer>

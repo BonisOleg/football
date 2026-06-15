@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static cup_tags %}
 
-{% block title %}Архів — Минулі турніри RUH LEO CUP{% endblock %}
+{% block title %}{% block_plain "site" "archive_page_title" %}{% endblock %}
 {% block body_theme %}{{ page_theme }}{% endblock %}
 
 {% block page_css %}
@@ -13,10 +13,10 @@
 <section class="archive-hero">
   <div class="archive-hero__glow"></div>
   <div class="container archive-hero__inner">
-    <div class="eyebrow text-accent">03 / Архів</div>
-    <h1 class="display archive-hero__title">Минулі<br><span class="text-accent">турніри</span></h1>
+    <div class="eyebrow text-accent">{% render_block "archive" "hero_eyebrow" %}</div>
+    <h1 class="display archive-hero__title">{% render_block "archive" "hero_title" %}</h1>
     <p class="text-muted archive-hero__lead">
-      Фото, цифри та моменти з минулих сезонів RUH LEO CUP. Чотири турніри на рік — одна історія футболу у Львові.
+      {% render_block "archive" "hero_desc" %}
     </p>
   </div>
 </section>
@@ -25,8 +25,8 @@
   <div class="container">
     <div class="section-head">
       <div>
-        <div class="eyebrow">Сезони</div>
-        <h2>Результати<br><span class="text-accent">за роки</span></h2>
+        <div class="eyebrow">{% render_block "archive" "editions_eyebrow" %}</div>
+        <h2>{% render_block "archive" "editions_title" %}</h2>
       </div>
     </div>
     <div class="archive-editions">
@@ -39,15 +39,15 @@
         <h3 class="display archive-edition__title">{{ e.title }}</h3>
         <dl class="archive-edition__stats">
           <div>
-            <dt class="eyebrow cup-label-sm">Команд</dt>
+            <dt class="eyebrow cup-label-sm">{% render_block "archive" "label_teams" %}</dt>
             <dd class="mono cup-meta-value">{{ e.teams }}</dd>
           </div>
           <div>
-            <dt class="eyebrow cup-label-sm">Матчів</dt>
+            <dt class="eyebrow cup-label-sm">{% render_block "archive" "label_matches" %}</dt>
             <dd class="mono cup-meta-value">{{ e.matches }}</dd>
           </div>
           <div>
-            <dt class="eyebrow cup-label-sm">Голів</dt>
+            <dt class="eyebrow cup-label-sm">{% render_block "archive" "label_goals" %}</dt>
             <dd class="mono cup-meta-value">{{ e.goals }}</dd>
           </div>
         </dl>
@@ -61,8 +61,8 @@
   <div class="container">
     <div class="section-head">
       <div>
-        <div class="eyebrow">Галерея</div>
-        <h2>Моменти<br><span class="text-accent">з поля</span></h2>
+        <div class="eyebrow">{% render_block "archive" "gallery_eyebrow" %}</div>
+        <h2>{% render_block "archive" "gallery_title" %}</h2>
       </div>
     </div>
     <div class="gallery-grid">

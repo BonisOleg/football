@@ -1,4 +1,4 @@
-/* Football Lviv admin — contrast fixes for spring-green primary palette */
+/* Football Generation admin — gold primary palette */
 
 .bg-primary-600.text-white,
 .border-primary-600.bg-primary-600.text-white {
@@ -9,10 +9,9 @@
   color: oklch(0.18 0.01 250);
 }
 
-/* Bulk actions bar: darker green so white text stays readable */
 .admin-bulk-actions {
-  background-color: oklch(44% 0.16 135);
-  color: oklch(98% 0.01 130);
+  background-color: oklch(46% 0.12 85);
+  color: oklch(98% 0.01 85);
 }
 
 .admin-bulk-actions .action-counter,
@@ -20,25 +19,24 @@
 .admin-bulk-actions .clear,
 .admin-bulk-actions .question a,
 .admin-bulk-actions .clear a {
-  color: oklch(98% 0.01 130);
+  color: oklch(98% 0.01 85);
 }
 
 .admin-bulk-actions select[name="action"] {
-  background-color: oklch(38% 0.14 135);
-  border-color: oklch(54% 0.14 135);
-  color: oklch(98% 0.01 130);
+  background-color: oklch(38% 0.10 85);
+  border-color: oklch(54% 0.12 85);
+  color: oklch(98% 0.01 85);
 }
 
 .admin-bulk-actions select[name="action"] option {
-  background-color: oklch(28% 0.12 135);
-  color: oklch(98% 0.01 130);
+  background-color: oklch(28% 0.08 85);
+  color: oklch(98% 0.01 85);
 }
 
 .admin-bulk-actions .material-symbols-outlined {
-  color: oklch(98% 0.01 130);
+  color: oklch(98% 0.01 85);
 }
 
-/* User menu: keep long Ukrainian labels inside the dropdown */
 #nav-sidebar-inner > nav.absolute {
   min-width: 0;
   overflow: hidden;
@@ -48,4 +46,236 @@
 #nav-sidebar-inner > nav.absolute button {
   min-width: 0;
   overflow-wrap: anywhere;
+}
+
+.admin-content-warning {
+  margin: 0 0 1rem;
+  padding: 1rem 1.125rem;
+  border: 1px solid oklch(72% 0.16 85);
+  border-radius: 12px;
+  background: oklch(28% 0.06 85);
+  color: oklch(96% 0.02 85);
+}
+
+.admin-content-warning__title {
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.admin-content-warning__list {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: 0.5rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.admin-content-warning__list code {
+  padding: 0.1rem 0.35rem;
+  border-radius: 6px;
+  background: oklch(22% 0.04 85);
+  font-size: 0.875em;
+}
+
+.admin-nav-page__toggle {
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+}
+
+.admin-nav-page__items a {
+  font-size: 0.875rem;
+  line-height: 1.35;
+}
+
+.admin-field-hint {
+  display: block;
+  margin-top: 0.35rem;
+  color: oklch(78% 0.04 85);
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 760px) {
+  .admin-content-warning {
+    padding: 0.875rem 1rem;
+  }
+
+  .admin-content-warning__title {
+    font-size: 0.9375rem;
+  }
+
+  .admin-content-warning__list {
+    font-size: 0.875rem;
+  }
+}
+
+.site-content-editor {
+  display: grid;
+  gap: 1.5rem;
+  max-width: 960px;
+}
+
+.site-content-editor__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.site-content-editor__eyebrow {
+  margin: 0 0 0.35rem;
+  color: oklch(72% 0.08 85);
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.site-content-editor__title {
+  margin: 0;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  line-height: 1.2;
+}
+
+.site-content-editor__preview {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid oklch(54% 0.12 85);
+  border-radius: 10px;
+  color: oklch(92% 0.03 85);
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+
+.site-content-editor__preview .material-symbols-outlined {
+  font-size: 1.125rem;
+}
+
+.site-content-editor__section-desc {
+  margin: 0.5rem 0 0;
+  color: oklch(78% 0.04 85);
+  font-size: 0.875rem;
+  line-height: 1.45;
+  max-width: 42rem;
+}
+
+.site-content-editor__fieldsets,
+.site-content-editor__fields {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.site-content-fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.site-content-fieldset__title {
+  margin: 0 0 0.875rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid oklch(32% 0.06 85);
+  color: oklch(92% 0.03 85);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.site-content-fieldset__fields {
+  display: grid;
+  gap: 1rem;
+}
+
+.site-content-editor__line-field,
+.site-content-editor input[type="text"],
+.site-content-editor input[type="email"],
+.site-content-editor input[type="url"],
+.site-content-editor input[type="tel"],
+.site-content-editor input[type="number"],
+.site-content-editor input[type="date"],
+.site-content-editor input[type="search"] {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid oklch(42% 0.04 250);
+  border-radius: 8px;
+  background: oklch(18% 0.02 250);
+  color: oklch(96% 0.02 250);
+  font: inherit;
+  line-height: 1.4;
+}
+
+.site-content-editor__textarea {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid oklch(42% 0.04 250);
+  border-radius: 8px;
+  background: oklch(18% 0.02 250);
+  color: oklch(96% 0.02 250);
+  font: inherit;
+  line-height: 1.45;
+}
+
+.site-content-editor__textarea--compact {
+  min-height: 0;
+  height: auto;
+  resize: vertical;
+}
+
+.site-content-editor__textarea--large {
+  min-height: 9rem;
+  resize: vertical;
+}
+
+.site-content-editor__line-field:focus,
+.site-content-editor input[type="text"]:focus,
+.site-content-editor input[type="email"]:focus,
+.site-content-editor input[type="url"]:focus,
+.site-content-editor input[type="tel"]:focus,
+.site-content-editor input[type="number"]:focus,
+.site-content-editor input[type="date"]:focus,
+.site-content-editor input[type="search"]:focus,
+.site-content-editor__textarea:focus,
+.site-content-editor textarea.vLargeTextField:focus {
+  outline: 2px solid oklch(72% 0.16 85);
+  outline-offset: 2px;
+}
+
+.site-content-editor__date-input {
+  color-scheme: dark;
+}
+
+.site-content-editor__inline-input {
+  width: auto;
+  max-width: 16rem;
+}
+
+.site-content-editor__inline-input--wide {
+  max-width: 100%;
+}
+
+.site-content-editor__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .site-content-editor__head {
+    flex-direction: column;
+  }
+
+  .site-content-editor__preview {
+    width: 100%;
+    justify-content: center;
+  }
 }

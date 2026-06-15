@@ -3,7 +3,7 @@ if (hero) {
   const dynamic = document.getElementById('hero-dynamic');
   const items = [...hero.querySelectorAll('[data-wheel-index]')];
   const count = items.length;
-  let active = 0;
+  let active = Number(hero.dataset.initialWheelIndex ?? 0);
   let cardDrag = null;
 
   const mobileMq = window.matchMedia('(max-width: 760px)');
@@ -41,14 +41,22 @@ if (hero) {
     }
   };
 
-  const scrollActiveWheelItem = () => {
-    if (!mobileMq.matches || !wheelTrack) return;
+  const scrollWheelToActive = () => {
+    if (!wheelTrack) return;
     const btn = items[active];
     if (!btn) return;
-    btn.scrollIntoView({
+
+    const trackRect = wheelTrack.getBoundingClientRect();
+    const btnRect = btn.getBoundingClientRect();
+    const offset =
+      btnRect.left -
+      trackRect.left -
+      (trackRect.width - btnRect.width) / 2 +
+      wheelTrack.scrollLeft;
+
+    wheelTrack.scrollTo({
+      left: offset,
       behavior: reducedMotionMq.matches ? 'auto' : 'smooth',
-      inline: 'center',
-      block: 'nearest',
     });
   };
 
@@ -57,6 +65,27 @@ if (hero) {
       dynamic.dataset.themeTarget = theme;
     }
     document.body.className = `page ${theme}`;
+  };
+
+  const updateHeroBg = (url) => {
+    const normalized = (url || '').trim();
+    let bg = hero.querySelector('.hero__bg');
+
+    if (normalized) {
+      if (!bg) {
+        bg = document.createElement('div');
+        bg.className = 'hero__bg';
+        bg.setAttribute('aria-hidden', 'true');
+        hero.insertBefore(bg, hero.querySelector('.hero__glow'));
+      }
+      bg.style.backgroundImage = `url('${normalized}')`;
+      hero.classList.add('hero--has-bg');
+      hero.dataset.heroBg = normalized;
+    } else {
+      bg?.remove();
+      hero.classList.remove('hero--has-bg');
+      delete hero.dataset.heroBg;
+    }
   };
 
   const swapPanel = (html, direction) => {
@@ -89,9 +118,9 @@ if (hero) {
     );
   };
 
-  const setActive = (index, direction = 0) => {
+  const setActive = (index, direction = 0, fetchContent = true) => {
     if (!count) return;
-    active = ((index % count) + count) % count;
+    active = Math.max(0, Math.min(index, count - 1));
     items.forEach((btn, i) => {
       const on = i === active;
       btn.classList.toggle('is-active', on);
@@ -101,16 +130,17 @@ if (hero) {
     const btn = items[active];
     const theme = btn.dataset.theme;
     if (theme) setTheme(theme);
+    updateHeroBg(btn.dataset.heroBg);
 
     const url = btn.dataset.partialUrl;
-    if (dynamic && url) {
+    if (fetchContent && dynamic && url) {
       fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
         .then((r) => r.text())
         .then((html) => swapPanel(html, direction))
         .catch(() => {});
     }
 
-    scrollActiveWheelItem();
+    scrollWheelToActive();
   };
 
   const goPrev = () => setActive(active - 1, -1);
@@ -203,5 +233,6 @@ if (hero) {
   };
 
   bindCardSwipe();
-  scrollActiveWheelItem();
+  setActive(active, 0, false);
+  requestAnimationFrame(scrollWheelToActive);
 }

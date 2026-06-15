@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static cup_tags %}
 
-{% block title %}Заявка команди — RUH LEO CUP{% endblock %}
+{% block title %}{% block_plain "site" "apply_page_title" %}{% endblock %}
 {% block body_theme %}{{ page_theme }}{% endblock %}
 
 {% block page_css %}
@@ -13,10 +13,10 @@
 <section class="apply-hero">
   <div class="apply-hero__glow"></div>
   <div class="container apply-hero__inner">
-    <div class="eyebrow text-accent">· ЗАЯВКА КОМАНДИ ·</div>
-    <h1 class="display apply-hero__title">Реєструйте<br><span class="text-accent">команду</span></h1>
+    <div class="eyebrow text-accent">{% render_block "apply" "hero_eyebrow" %}</div>
+    <h1 class="display apply-hero__title">{% render_block "apply" "hero_title" %}</h1>
     <p class="text-muted apply-hero__lead">
-      Заявка приймається лише від офіційних представників школи, академії або клубу. Після подання з вами зв'яжеться менеджер турніру.
+      {% render_block "apply" "hero_desc" %}
     </p>
   </div>
 </section>

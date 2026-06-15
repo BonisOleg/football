@@ -1,10 +1,5 @@
 /* Home page specifics */
 
-.hero__card-stage {
-  position: relative;
-  min-width: 0;
-}
-
 .hero[data-season-wheel] .hero__card {
   touch-action: pan-y;
   cursor: grab;

@@ -1,19 +1,20 @@
+{% load cup_tags %}
 <div class="apply-success">
   <div class="apply-hero__glow"></div>
   <div class="container apply-success__inner text-center">
-    <div class="eyebrow text-accent">· ЗАЯВКУ ПРИЙНЯТО ·</div>
+    <div class="eyebrow text-accent">{% block_plain "apply" "success_eyebrow" %}</div>
     <h1 class="display apply-hero__title">
-      Дякуємо,<br><span class="text-accent">{{ application.team_name }}!</span>
+      {% block_plain "apply" "success_title_prefix" %}<br><span class="text-accent">{{ application.team_name }}!</span>
     </h1>
     <p class="text-muted apply-success__text">
-      Ми зв'яжемося з вами протягом 24 годин для підтвердження участі у турнірі
+      {% block_plain "apply" "success_desc" %}
       <strong class="text-accent">{{ application.tournament.title }} · {{ application.tournament.season }} {{ application.tournament.year }}</strong>.
     </p>
     <div class="hero__actions cup-success-actions">
       <a href="{{ application.tournament.get_absolute_url }}" class="btn btn-primary">
-        До сторінки турніру {% include "includes/arrow.html" %}
+        {% block_plain "apply" "success_btn_tournament" %} {% include "includes/arrow.html" %}
       </a>
-      <a href="{% url 'tournaments:home' %}" class="btn btn-ghost">На головну</a>
+      <a href="{% url 'tournaments:home' %}" class="btn btn-ghost">{% block_plain "apply" "success_btn_home" %}</a>
     </div>
   </div>
 </div>

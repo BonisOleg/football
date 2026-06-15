@@ -2,17 +2,21 @@
 <div class="hero__title-row">
   <div class="hero__main">
     <div class="eyebrow text-accent hero-panel__index">
-      {{ tournament.season|upper }} {{ tournament.year }}
+      {{ tournament.season|upper }} {{ tournament.year_label }}
     </div>
     <h1 class="display hero__mega-title">
-      {% for part in tournament.title|split:" " %}
-      <span{% if not forloop.first %} class="hero__title-accent"{% endif %}>{{ part }}</span>
+      {% for part in tournament.hero_title_parts %}
+      <span{% if part.accent %} class="hero__title-accent"{% elif part.brand %} class="hero__title-brand"{% endif %}>{{ part.text }}</span>
       {% endfor %}
     </h1>
-    <div class="hero__desc">{{ tournament.description }}</div>
+    <div class="hero__desc">{{ tournament.description|safe_html }}</div>
     <div class="hero__actions">
-      <a href="{{ tournament.get_absolute_url }}" class="btn btn-primary">Перейти до турніру {% include "includes/arrow.html" %}</a>
-      <a href="{% url 'tournaments:apply' %}?tournament={{ tournament.slug }}" class="btn btn-ghost">Подати заявку</a>
+      {% if detail_url %}
+      <a href="{{ detail_url }}" class="btn btn-primary">{% render_block "home" "hero_btn_detail" %} {% include "includes/arrow.html" %}</a>
+      {% elif is_virtual %}
+      <span class="btn btn-primary is-disabled" aria-disabled="true">{% render_block "home" "hero_btn_soon" %}</span>
+      {% endif %}
+      <a href="{{ apply_url }}" class="btn btn-ghost">{% render_block "home" "hero_btn_apply" %}</a>
     </div>
   </div>
   <div class="hero__card-stage">
@@ -22,32 +26,32 @@
         <div class="eyebrow text-accent">{{ tournament.season_en|upper }}</div>
         {% include "includes/season_icon.html" with season=tournament.season_en size=28 %}
       </div>
-      <div class="display hero__card-year">{{ tournament.year }}</div>
+      <div class="display hero__card-year">{{ tournament.year_label }}</div>
       <div class="display hero__card-season">{{ tournament.season }}</div>
       <div class="hero__card-divider"></div>
       <div class="hero__card-grid">
         <div>
-          <div class="eyebrow cup-label-sm">Дати</div>
+          <div class="eyebrow cup-label-sm">{% render_block "home" "label_dates" %}</div>
           <div class="mono cup-meta-value">{{ tournament.dates_display }}</div>
         </div>
         <div>
-          <div class="eyebrow cup-label-sm">Команд</div>
+          <div class="eyebrow cup-label-sm">{% render_block "home" "label_teams" %}</div>
           <div class="mono cup-meta-value">{{ tournament.teams_count }}</div>
         </div>
         <div>
-          <div class="eyebrow cup-label-sm">Локація</div>
+          <div class="eyebrow cup-label-sm">{% render_block "home" "label_location" %}</div>
           <div class="mono cup-meta-value">{{ tournament.location }}</div>
         </div>
         <div>
-          <div class="eyebrow cup-label-sm">Формат</div>
+          <div class="eyebrow cup-label-sm">{% render_block "home" "label_format" %}</div>
           <div class="mono cup-meta-value">{{ tournament.format_text }}</div>
         </div>
       </div>
     </div>
     <p class="hero__card-swipe-hint" aria-hidden="true">
       <span class="hero__card-swipe-hint-icon" aria-hidden="true">↔</span>
-      <span class="hero__card-swipe-hint-text hero__card-swipe-hint-text--touch">Свайпніть для зміни сезону</span>
-      <span class="hero__card-swipe-hint-text hero__card-swipe-hint-text--drag">Перетягніть для зміни сезону</span>
+      <span class="hero__card-swipe-hint-text hero__card-swipe-hint-text--touch">{% render_block "home" "hero_swipe_touch" %}</span>
+      <span class="hero__card-swipe-hint-text hero__card-swipe-hint-text--drag">{% render_block "home" "hero_swipe_drag" %}</span>
     </p>
   </div>
   </div>

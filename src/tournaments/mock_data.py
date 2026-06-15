@@ -56,44 +56,22 @@ SCHEDULE_MOCK = [
     {"day": 2, "time": "13:00", "field": "Поле C", "a": TEAMS_POOL[5], "b": TEAMS_POOL[12], "age": "U-10", "status": "upcoming", "sA": None, "sB": None},
 ]
 
-GALLERY_TEASER = [
-    {
-        "h": 240,
-        "label": "OPENING CEREMONY · MAY 2025",
-        "src": "images/gallery/opening-ceremony.jpg",
-        "alt": "Церемонія відкриття LEO CUP — командне фото",
-    },
-    {
-        "h": 320,
-        "label": "FINAL MATCH · U12",
-        "src": "images/gallery/final-match-u12.jpg",
-        "alt": "Фінал U12 — команди на полі після матчу",
-    },
-    {
-        "h": 240,
-        "label": "WINNER PHOTO",
-        "src": "images/gallery/winner-photo.jpg",
-        "alt": "Переможці LEO CUP з кубком",
-    },
-    {
-        "h": 240,
-        "label": "CROWD · TRIBUNES",
-        "src": "images/gallery/crowd-tribunes.jpg",
-        "alt": "Уболівальники та переможці на турнірі",
-    },
-    {
-        "h": 320,
-        "label": "GOAL · 89th MIN",
-        "src": "images/gallery/goal-89min.jpg",
-        "alt": "Гострий момент матчу — боротьба за мʼяч",
-    },
-    {
-        "h": 240,
-        "label": "TROPHY HANDOVER",
-        "src": "images/gallery/trophy-handover.jpg",
-        "alt": "Вручення кубка переможцям",
-    },
-]
+GALLERY_PLACEHOLDER = "images/gallery-placeholder.svg"
+
+
+def _gallery_placeholders(count: int, heights: list[int]) -> list[dict]:
+    return [
+        {
+            "h": heights[i % len(heights)],
+            "label": "",
+            "src": GALLERY_PLACEHOLDER,
+            "alt": "Фото скоро зʼявиться",
+        }
+        for i in range(count)
+    ]
+
+
+GALLERY_TEASER = _gallery_placeholders(6, [240, 320, 240, 240, 320, 240])
 
 MARQUEE_ITEMS = [
     "ОДИН ФУТБОЛ",
@@ -103,31 +81,12 @@ MARQUEE_ITEMS = [
     "НАЙМАСОВІШІ ТУРНІРИ УКРАЇНИ",
 ]
 
-ARCHIVE_GALLERY = GALLERY_TEASER + [
-    {
-        "h": 320,
-        "label": "TEAM HUDDLE · 2024",
-        "src": "images/gallery/opening-ceremony.jpg",
-        "alt": "Командне коло перед матчем",
-    },
-    {
-        "h": 240,
-        "label": "MEDALS · U11",
-        "src": "images/gallery/winner-photo.jpg",
-        "alt": "Нагородження гравців U11",
-    },
-    {
-        "h": 240,
-        "label": "FIELD WARMUP",
-        "src": "images/gallery/final-match-u12.jpg",
-        "alt": "Розминка команди на полі",
-    },
-]
+ARCHIVE_GALLERY = _gallery_placeholders(6, [240, 320, 240, 320, 240, 240])
 
 ARCHIVE_EDITIONS = [
     {
         "year": "2025",
-        "title": "LEO CUP",
+        "title": "FG SPRING CUP",
         "season": "Весна",
         "teams": 58,
         "matches": 72,
@@ -136,7 +95,16 @@ ARCHIVE_EDITIONS = [
     },
     {
         "year": "2025",
-        "title": "LEO CUP",
+        "title": "FG SUMMER CUP",
+        "season": "Літо",
+        "teams": 52,
+        "matches": 68,
+        "goals": 290,
+        "theme_class": "theme-summer",
+    },
+    {
+        "year": "2025",
+        "title": "FG SPRING CUP",
         "season": "Осінь",
         "teams": 44,
         "matches": 56,
@@ -145,7 +113,7 @@ ARCHIVE_EDITIONS = [
     },
     {
         "year": "2025",
-        "title": "RUH CUP",
+        "title": "FG CUP",
         "season": "Зима",
         "teams": 36,
         "matches": 48,
@@ -154,7 +122,7 @@ ARCHIVE_EDITIONS = [
     },
     {
         "year": "2024",
-        "title": "RUH KIDS CUP",
+        "title": "FG KIDS CUP",
         "season": "Зима",
         "teams": 52,
         "matches": 64,

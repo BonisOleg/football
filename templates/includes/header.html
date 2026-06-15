@@ -1,32 +1,32 @@
+{% load cup_tags %}
 <div class="site-header-stack">
   <input type="checkbox" id="site-nav-toggle" class="site-nav-toggle">
   <header class="site-chrome">
     <div class="site-chrome__backdrop" aria-hidden="true"></div>
     <div class="container site-chrome__inner">
-      <a href="{% url 'tournaments:home' %}" class="site-header__logo">
-        {% include "includes/logo.html" with size=44 %}
-        <span class="site-header__logo-text">
-          <span>RUH</span><span class="text-accent">·</span><span>LEO</span>
-          <span class="site-header__logo-muted">CUP</span>
+      <a href="{% url 'tournaments:home' %}" class="site-header__logo site-header__logo--brand">
+        {% include "includes/logo.html" with size=64 %}
+        <span class="site-header__wordmark display">
+          {% block_plain "header" "wordmark_primary" %} <span class="site-header__wordmark-accent">{% block_plain "header" "wordmark_accent" %}</span>
         </span>
       </a>
 
       <label for="site-nav-toggle" class="site-header__burger" data-nav-toggle aria-expanded="false">
         <span></span><span></span><span></span>
-        <span class="hidden">Меню</span>
+        <span class="hidden">{% block_plain "header" "menu_sr_label" %}</span>
       </label>
 
-      <a href="{% url 'tournaments:apply' %}" class="btn btn-primary site-header__cta">Подати заявку {% include "includes/arrow.html" %}</a>
+      <a href="{% url 'tournaments:apply' %}" class="btn btn-primary site-header__cta">{% render_block "header" "cta_label" %} {% include "includes/arrow.html" %}</a>
     </div>
 
-    <nav id="site-nav" class="site-header__nav" aria-label="Головна навігація">
-      <a href="{% url 'tournaments:home' %}" class="site-header__nav-link{% if current_nav == 'hub' %} nav-active{% endif %}">Головна</a>
+    <nav id="site-nav" class="site-header__nav" aria-label="{% block_plain "header" "nav_aria_label" %}">
+      <a href="{% url 'tournaments:home' %}" class="site-header__nav-link{% if current_nav == 'hub' %} nav-active{% endif %}">{% block_plain "header" "nav_home" %}</a>
       {% for t in nav_tournaments %}
       <a href="{{ t.get_absolute_url }}" class="site-header__nav-link{% if current_nav == t.slug %} nav-active{% endif %}">{{ t.nav_label }}</a>
       {% endfor %}
-      <a href="{% url 'tournaments:apply' %}" class="site-header__nav-link{% if current_nav == 'apply' %} nav-active{% endif %}">Заявка</a>
-      <a href="{% url 'tournaments:archive' %}" class="site-header__nav-link{% if current_nav == 'archive' %} nav-active{% endif %}">Архів</a>
-      <a href="{% url 'tournaments:apply' %}" class="btn btn-primary site-header__cta--mobile">Подати заявку {% include "includes/arrow.html" %}</a>
+      <a href="{% url 'tournaments:apply' %}" class="site-header__nav-link{% if current_nav == 'apply' %} nav-active{% endif %}">{% block_plain "header" "nav_apply" %}</a>
+      <a href="{% url 'tournaments:archive' %}" class="site-header__nav-link{% if current_nav == 'archive' %} nav-active{% endif %}">{% block_plain "header" "nav_archive" %}</a>
+      <a href="{% url 'tournaments:apply' %}" class="btn btn-primary site-header__cta--mobile">{% render_block "header" "cta_label" %} {% include "includes/arrow.html" %}</a>
     </nav>
   </header>
 </div>

@@ -3,13 +3,18 @@
     "model": "tournaments.sitesettings",
     "pk": 1,
     "fields": {
+      "site_name": "Football Generation",
       "phone": "+38 068 890 28 44",
-      "email": "ruhcupleocup@gmail.com",
+      "email": "diegomara@ukr.net",
       "city": "Львів, Україна",
-      "url_instagram": "https://www.instagram.com/ruh_leo_cup/",
-      "url_telegram": "https://t.me/+Vb_0wcwhc4-Foxg5",
-      "url_youtube": "https://www.youtube.com/@RUHCUP",
-      "url_tiktok": "https://www.tiktok.com/@ruh_leo_cup"
+      "url_instagram": "",
+      "url_telegram": "",
+      "url_youtube": "",
+      "url_tiktok": "",
+      "header_cta_label": "Подати заявку",
+      "footer_about": "Наймасовіші футбольні турніри Західної України. Пʼять сезонів — пʼять фестивалів футболу для дітей від 6 років.",
+      "footer_copyright": "© {year} Football Generation · ALL RIGHTS RESERVED",
+      "logo": ""
     }
   },
   {
@@ -17,7 +22,7 @@
     "pk": 1,
     "fields": {
       "slug": "leo-cup",
-      "title": "LEO CUP",
+      "title": "FG SPRING CUP",
       "subtitle": "Spring Edition",
       "season": "Весна",
       "season_en": "Spring",
@@ -45,10 +50,41 @@
   },
   {
     "model": "tournaments.tournament",
+    "pk": 5,
+    "fields": {
+      "slug": "fg-summer-cup",
+      "title": "FG SUMMER CUP",
+      "subtitle": "Summer Edition",
+      "season": "Літо",
+      "season_en": "Summer",
+      "year": "2026",
+      "theme_class": "theme-summer",
+      "dates_display": "10 — 12 липня 2026",
+      "starts_at": "2026-07-10T06:00:00Z",
+      "ends_at": "2026-07-12T20:00:00Z",
+      "location": "СК «Сокіл», Львів",
+      "teams_count": 52,
+      "matches_count": 78,
+      "goals_count": null,
+      "wins_count": null,
+      "age_groups": ["U-9", "U-10", "U-11", "U-12", "U-13"],
+      "format_text": "7+1, два тайми по 20 хв",
+      "prize": "Кубки + медалі + MVP турніру",
+      "fee_uah": "4 100",
+      "description": "Літня серія Football Generation на відкритому полі. Інтенсивний футбол під сонцем — головний виклик сезону для юних гравців.",
+      "highlight": "Літній футбол на відкритому повітрі",
+      "tagline": "Гаряче літо на полі",
+      "icon_hint": "SUN · GOLD",
+      "is_published": true,
+      "sort_order": 2
+    }
+  },
+  {
+    "model": "tournaments.tournament",
     "pk": 2,
     "fields": {
       "slug": "leo-cup-osen",
-      "title": "LEO CUP",
+      "title": "FG AUTUMN CUP",
       "subtitle": "Autumn Edition",
       "season": "Осінь",
       "season_en": "Autumn",
@@ -66,12 +102,12 @@
       "format_text": "6+1, два тайми по 20 хв",
       "prize": "Кубки + медалі + MVP турніру",
       "fee_uah": "4 000",
-      "description": "Осіння серія Leo Cup — фінальний турнір сезону на природному газоні. Зустріч найсильніших шкіл Львова, Києва, Тернополя та Івано-Франківська.",
+      "description": "Осіння серія Football Generation — фінальний турнір сезону на природному газоні. Зустріч найсильніших шкіл Львова, Києва, Тернополя та Івано-Франківська.",
       "highlight": "Фінал сезону наживо",
       "tagline": "Підсумок року на полі",
       "icon_hint": "AMBER · LEAVES",
       "is_published": true,
-      "sort_order": 2
+      "sort_order": 3
     }
   },
   {
@@ -79,7 +115,7 @@
     "pk": 3,
     "fields": {
       "slug": "ruh-cup",
-      "title": "RUH CUP",
+      "title": "FG CUP",
       "subtitle": "Winter Edition",
       "season": "Зима",
       "season_en": "Winter",
@@ -88,21 +124,21 @@
       "dates_display": "23 — 25 січня 2026",
       "starts_at": "2026-01-23T06:00:00Z",
       "ends_at": "2026-01-25T20:00:00Z",
-      "location": "Манеж РУХ, Львів",
+      "location": "Спортивний манеж, Львів",
       "teams_count": 40,
       "matches_count": 64,
       "goals_count": null,
       "wins_count": null,
       "age_groups": ["U-13", "U-14", "U-15", "U-16", "U-17"],
       "format_text": "5+1, два тайми по 15 хв",
-      "prize": "Кубок RUH + персональні нагороди",
+      "prize": "Кубок FG + персональні нагороди",
       "fee_uah": "4 500",
       "description": "Зимовий турнір під дахом для старших вікових груп. Швидкий, технічний футбол у манежі — справжній іспит майстерності.",
       "highlight": "Топ-академії країни",
       "tagline": "Майстерність під дахом",
       "icon_hint": "ICE · BLUE",
       "is_published": true,
-      "sort_order": 3
+      "sort_order": 4
     }
   },
   {
@@ -110,7 +146,7 @@
     "pk": 4,
     "fields": {
       "slug": "ruh-kids-cup",
-      "title": "RUH KIDS CUP",
+      "title": "FG KIDS CUP",
       "subtitle": "Winter Kids",
       "season": "Kids",
       "season_en": "Kids",
@@ -119,7 +155,7 @@
       "dates_display": "6 — 8 лютого 2026",
       "starts_at": "2026-02-06T06:00:00Z",
       "ends_at": "2026-02-08T20:00:00Z",
-      "location": "Манеж РУХ, Львів",
+      "location": "Спортивний манеж, Львів",
       "teams_count": 56,
       "matches_count": 84,
       "goals_count": null,
@@ -133,7 +169,7 @@
       "tagline": "Перші перемоги",
       "icon_hint": "FIRE · RED",
       "is_published": true,
-      "sort_order": 4
+      "sort_order": 5
     }
   }
 ]

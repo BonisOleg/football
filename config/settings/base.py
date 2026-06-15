@@ -4,6 +4,12 @@ from decouple import Csv, config
 from django.templatetags.static import static
 from django.urls import reverse_lazy
 
+from src.tournaments.site_content_registry import (
+    build_archive_sidebar_items,
+    build_content_sidebar_items,
+    build_season_sidebar_items,
+)
+
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SECRET_KEY = config("SECRET_KEY")
@@ -111,15 +117,15 @@ EMAIL_BACKEND = config(
 DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default="noreply@lvivcup.com.ua")
 APPLICATION_NOTIFY_EMAIL = config(
     "APPLICATION_NOTIFY_EMAIL",
-    default="ruhcupleocup@gmail.com",
+    default="diegomara@ukr.net",
 )
 
 UNFOLD = {
-    "SITE_TITLE": "Football Lviv",
+    "SITE_TITLE": "Football Generation",
     "SITE_HEADER": "Адмін-панель",
     "SITE_SUBHEADER": "Керування турнірами та контентом",
     "SITE_URL": "/",
-    "SITE_ICON": lambda request: static("images/ruh-leo-cup-logo.png"),
+    "SITE_ICON": lambda request: static("images/football-generation-logo.png"),
     "SITE_FAVICONS": [
         {
             "rel": "icon",
@@ -147,17 +153,17 @@ UNFOLD = {
     "SHOW_VIEW_ON_SITE": True,
     "COLORS": {
         "primary": {
-            "50": "oklch(97% 0.02 130)",
-            "100": "oklch(94% 0.04 130)",
-            "200": "oklch(91% 0.07 130)",
-            "300": "oklch(88% 0.12 130)",
-            "400": "oklch(87% 0.16 130)",
-            "500": "oklch(86% 0.20 130)",
-            "600": "oklch(86% 0.20 130)",
-            "700": "oklch(62% 0.20 135)",
-            "800": "oklch(50% 0.18 135)",
-            "900": "oklch(40% 0.15 135)",
-            "950": "oklch(28% 0.12 135)",
+            "50": "oklch(97% 0.02 85)",
+            "100": "oklch(94% 0.04 85)",
+            "200": "oklch(91% 0.07 85)",
+            "300": "oklch(88% 0.10 85)",
+            "400": "oklch(84% 0.14 85)",
+            "500": "oklch(78% 0.16 85)",
+            "600": "oklch(72% 0.16 85)",
+            "700": "oklch(58% 0.14 85)",
+            "800": "oklch(46% 0.12 85)",
+            "900": "oklch(36% 0.10 85)",
+            "950": "oklch(24% 0.08 85)",
         },
     },
     "STYLES": [
@@ -165,6 +171,7 @@ UNFOLD = {
     ],
     "SIDEBAR": {
         "show_search": True,
+        "show_all_applications": False,
         "navigation": [
             {
                 "title": "Турніри",
@@ -206,17 +213,6 @@ UNFOLD = {
                         "icon": "assignment",
                         "link": reverse_lazy("admin:tournaments_application_changelist"),
                     },
-                ],
-            },
-            {
-                "title": "Архів",
-                "collapsible": True,
-                "items": [
-                    {
-                        "title": "Архівні турніри",
-                        "icon": "inventory_2",
-                        "link": reverse_lazy("admin:tournaments_archiveedition_changelist"),
-                    },
                     {
                         "title": "Галерея",
                         "icon": "photo_library",
@@ -225,13 +221,31 @@ UNFOLD = {
                 ],
             },
             {
-                "title": "Налаштування",
-                "collapsible": True,
+                "title": "Контент сайту",
+                "collapsible": False,
                 "items": [
                     {
                         "title": "Налаштування сайту",
                         "icon": "settings",
                         "link": reverse_lazy("admin:tournaments_sitesettings_changelist"),
+                    },
+                    *build_content_sidebar_items(),
+                ],
+            },
+            {
+                "title": "Сезони",
+                "collapsible": False,
+                "items": build_season_sidebar_items(),
+            },
+            {
+                "title": "Архів сезонів",
+                "collapsible": False,
+                "items": [
+                    *build_archive_sidebar_items(),
+                    {
+                        "title": "Архівні турніри",
+                        "icon": "inventory_2",
+                        "link": reverse_lazy("admin:tournaments_archiveedition_changelist"),
                     },
                 ],
             },
@@ -247,5 +261,9 @@ TINYMCE_DEFAULT_CONFIG = {
     "menubar": False,
     "plugins": "link lists",
     "toolbar": "undo redo | bold italic | bullist numlist | link",
-    "content_style": "body { font-family: inherit; font-size: 14px; }",
+    "skin": "oxide-dark",
+    "content_css": "dark",
+    "content_style": (
+        "body { background: #111827; color: #f9fafb; font-family: inherit; font-size: 14px; }"
+    ),
 }

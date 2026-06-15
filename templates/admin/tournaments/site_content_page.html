@@ -1,0 +1,63 @@
+{% extends "admin/base_site.html" %}
+{% load i18n unfold %}
+
+{% block title %}{{ title }} · {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block extrahead %}
+    {{ block.super }}
+{% endblock %}
+
+{% block content %}
+<div class="site-content-editor">
+    <div class="site-content-editor__head">
+        <div>
+            <p class="site-content-editor__eyebrow">
+                {% for crumb, url in breadcrumb %}
+                    {% if not forloop.last %}{{ crumb }} → {% else %}{{ crumb }}{% endif %}
+                {% endfor %}
+            </p>
+            <h1 class="site-content-editor__title">{{ title }}</h1>
+            {% if section.description %}
+            <p class="site-content-editor__section-desc">{{ section.description }}</p>
+            {% endif %}
+        </div>
+        <a href="{{ preview_url }}" class="site-content-editor__preview" target="_blank" rel="noopener noreferrer">
+            Переглянути на сайті
+            <span class="material-symbols-outlined" aria-hidden="true">open_in_new</span>
+        </a>
+    </div>
+
+    {{ content_warning }}
+
+    {% include "unfold/helpers/messages.html" %}
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            {% include "unfold/helpers/messages/errornote.html" with errors=form.non_field_errors %}
+        {% endif %}
+
+        <div class="site-content-editor__fieldsets">
+            {% for fieldset_title, fieldset_fields in fieldsets %}
+            <section class="site-content-fieldset">
+                {% if fieldset_title %}
+                <h2 class="site-content-fieldset__title">{{ fieldset_title }}</h2>
+                {% endif %}
+                <div class="site-content-fieldset__fields">
+                    {% for field in fieldset_fields %}
+                        {% include "unfold/helpers/field.html" with field=field %}
+                    {% endfor %}
+                </div>
+            </section>
+            {% endfor %}
+        </div>
+
+        <div class="site-content-editor__actions">
+            {% component "unfold/components/button.html" with submit=1 name="_save" variant="primary" %}
+                {% trans "Зберегти" %}
+            {% endcomponent %}
+        </div>
+    </form>
+</div>
+{% endblock %}
