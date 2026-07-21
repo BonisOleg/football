@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.urls import reverse
 from django.utils import timezone
@@ -10,6 +10,8 @@ from .models import Tournament
 
 CALENDAR_AFTER_COUNT = 3
 KIDS_SEASON = Tournament.SeasonIcon.KIDS
+# Hard cap: never spin forever if dates/cycle cannot satisfy the window.
+MAX_FORWARD_PROJECTIONS = 48
 
 
 @dataclass(frozen=True)
@@ -116,9 +118,29 @@ def _forward_ahead_counts(slots: list[SeasonSlot], active_idx: int) -> tuple[int
     return non_kids, has_kids
 
 
-def _forward_window_satisfied(slots: list[SeasonSlot], active_idx: int) -> bool:
+def _forward_window_satisfied(
+    slots: list[SeasonSlot],
+    active_idx: int,
+    *,
+    require_kids: bool,
+) -> bool:
     non_kids, has_kids = _forward_ahead_counts(slots, active_idx)
-    return non_kids >= CALENDAR_AFTER_COUNT and has_kids
+    if non_kids < CALENDAR_AFTER_COUNT:
+        return False
+    if require_kids and not has_kids:
+        return False
+    return True
+
+
+def _advance_cursor(cursor_end: datetime, starts: datetime, ends: datetime | None) -> datetime:
+    """Move projection cursor strictly forward to avoid infinite skip loops."""
+    candidate = _ends_at_or_starts_at(starts, ends)
+    if candidate > cursor_end:
+        return candidate
+    # ends_at before/equal starts (bad data) or overlapping existing slot — still progress.
+    if starts > cursor_end:
+        return starts
+    return cursor_end + timedelta(seconds=1)
 
 
 def get_calendar_season_slots(
@@ -285,6 +307,7 @@ def build_season_timeline(
         key=lambda slot: slot.presentation.starts_at,
     )
 
+    require_kids = any(t.season_en == KIDS_SEASON for t in cycle)
     active_idx = active_wheel_index(ordered, at=at)
 
     if ordered:
@@ -295,7 +318,11 @@ def build_season_timeline(
     else:
         cursor_end = at
 
-    while not _forward_window_satisfied(ordered, active_idx):
+    projections = 0
+    while not _forward_window_satisfied(ordered, active_idx, require_kids=require_kids):
+        if projections >= MAX_FORWARD_PROJECTIONS:
+            break
+
         nxt = _next_edition_after(cycle, cursor_end)
         if nxt is None:
             break
@@ -303,7 +330,8 @@ def build_season_timeline(
         template, starts, ends = nxt
         key = _slot_key(template.season_en, starts)
         if key in slots_by_key:
-            cursor_end = _ends_at_or_starts_at(starts, ends)
+            cursor_end = _advance_cursor(cursor_end, starts, ends)
+            projections += 1
             continue
 
         slot = SeasonSlot(
@@ -315,7 +343,9 @@ def build_season_timeline(
         slots_by_key[key] = slot
         ordered.append(slot)
         ordered.sort(key=lambda item: item.presentation.starts_at)
-        cursor_end = _ends_at_or_starts_at(starts, ends)
+        active_idx = active_wheel_index(ordered, at=at)
+        cursor_end = _advance_cursor(cursor_end, starts, ends)
+        projections += 1
 
     return _trim_wheel_slots(ordered, at)
 

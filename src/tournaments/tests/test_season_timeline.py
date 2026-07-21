@@ -157,3 +157,29 @@ class SeasonTimelineTests(TestCase):
         slots, active = get_home_season_timeline(at=at)
         self.assertEqual(active, active_wheel_index(slots, at=at))
         self.assertFalse(slots[active].is_past)
+
+    def test_timeline_without_kids_does_not_hang(self):
+        Tournament.objects.filter(season_en=Tournament.SeasonIcon.KIDS).update(
+            is_published=False
+        )
+        at = self._at(2026, 7, 21)
+        slots, active = get_home_season_timeline(at=at)
+        self.assertGreaterEqual(len(slots), 1)
+        self.assertLess(active, len(slots))
+        calendar = get_calendar_season_slots(slots, at=at)
+        self.assertGreaterEqual(len(calendar), 1)
+        self.assertTrue(
+            all(
+                slot.presentation.season_en != Tournament.SeasonIcon.KIDS
+                for slot in calendar
+            )
+        )
+
+    def test_timeline_with_inverted_ends_at_does_not_hang(self):
+        summer = Tournament.objects.get(slug="fg-summer-cup")
+        summer.ends_at = summer.starts_at - timezone.timedelta(days=1)
+        summer.save(update_fields=["ends_at"])
+        at = self._at(2026, 7, 21)
+        slots, active = get_home_season_timeline(at=at)
+        self.assertGreaterEqual(len(slots), 1)
+        self.assertLess(active, len(slots))
